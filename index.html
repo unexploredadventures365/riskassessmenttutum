@@ -3,2036 +3,1553 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Risk Engine — Fintech Underwriting Platform</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<title>Tutum — Hybrid Lending Platform</title>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@300;400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-  /* ─── DARK MODE (default / system dark) ─── */
+:root {
+  --red: #C0392B;
+  --red2: #A93226;
+  --red-light: #FADBD8;
+  --red-xlight: #FDF2F0;
+  --cream: #FDFBF4;
+  --cream2: #F5F2E8;
+  --cream3: #EDE9DA;
+  --ink: #1A1208;
+  --ink2: #4A3F2F;
+  --ink3: #8B7D6B;
+  --ink4: #C4B8A8;
+  --white: #FFFFFF;
+  --border: #E8E0D0;
+  --border2: #D4C9B5;
+  --prime: #0A7C4E;
+  --prime-bg: #E8F5EF;
+  --strong: #1A56A0;
+  --strong-bg: #EBF2FB;
+  --watch: #B7670A;
+  --watch-bg: #FEF3E2;
+  --high: #C0392B;
+  --high-bg: #FADBD8;
+  --shadow-sm: 0 1px 4px rgba(26,18,8,0.06);
+  --shadow: 0 4px 20px rgba(26,18,8,0.08);
+  --shadow-lg: 0 12px 48px rgba(26,18,8,0.12);
+  --r: 12px;
+  --r-sm: 8px;
+  --serif: 'Instrument Serif', Georgia, serif;
+  --sans: 'Geist', system-ui, sans-serif;
+  --mono: 'Geist Mono', monospace;
+}
+@media (prefers-color-scheme: dark) {
   :root {
-    --bg: #0a0c10;
-    --surface: #111318;
-    --surface2: #181c24;
-    --surface3: #1e2330;
-    --border: #252b3b;
-    --border2: #2e3647;
-    --text: #e8ecf5;
-    --text2: #8b92a8;
-    --text3: #555e77;
-    --accent: #4f8ef7;
-    --accent2: #7c5cfc;
-    --prime: #22d07a;
-    --strong: #4f8ef7;
-    --watch: #f5a623;
-    --high: #f05252;
-    --prime-bg: rgba(34,208,122,0.1);
-    --strong-bg: rgba(79,142,247,0.1);
-    --watch-bg: rgba(245,166,35,0.1);
-    --high-bg: rgba(240,82,82,0.1);
-    --shadow: 0 4px 24px rgba(0,0,0,0.4);
-    --shadow-lg: 0 8px 48px rgba(0,0,0,0.6);
-    --header-bg: rgba(10,12,16,0.85);
-    --grid-line: rgba(79,142,247,0.03);
-    --radius: 12px;
-    --radius-sm: 8px;
-    --radius-xs: 6px;
-    --mono: 'DM Mono', monospace;
-    --sans: 'DM Sans', sans-serif;
-    --display: 'Syne', sans-serif;
-  }
-
-  /* ─── LIGHT MODE (system light) ─── */
-  @media (prefers-color-scheme: light) {
-    :root {
-      --bg: #f4f6fb;
-      --surface: #ffffff;
-      --surface2: #f0f2f8;
-      --surface3: #e6e9f4;
-      --border: #dde1ef;
-      --border2: #c8cde0;
-      --text: #0f1520;
-      --text2: #4a5270;
-      --text3: #8b93b0;
-      --accent: #2f6ff0;
-      --accent2: #6236e0;
-      --prime: #0da85e;
-      --strong: #2f6ff0;
-      --watch: #d4820a;
-      --high: #d93636;
-      --prime-bg: rgba(13,168,94,0.09);
-      --strong-bg: rgba(47,111,240,0.09);
-      --watch-bg: rgba(212,130,10,0.09);
-      --high-bg: rgba(217,54,54,0.09);
-      --shadow: 0 4px 24px rgba(15,21,32,0.08);
-      --shadow-lg: 0 8px 48px rgba(15,21,32,0.14);
-      --header-bg: rgba(244,246,251,0.88);
-      --grid-line: rgba(47,111,240,0.04);
-    }
-  }
-
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: var(--sans);
-    font-size: 14px;
-    line-height: 1.6;
-    min-height: 100vh;
-    overflow-x: hidden;
-  }
-
-  /* ─── GRID NOISE BACKGROUND ─── */
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background-image:
-      linear-gradient(var(--grid-line) 1px, transparent 1px),
-      linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
-    background-size: 48px 48px;
-    pointer-events: none;
-    z-index: 0;
-  }
-
-  /* ─── HEADER ─── */
-  header {
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    background: var(--header-bg);
-    backdrop-filter: blur(20px);
-    border-bottom: 1px solid var(--border);
-    padding: 0 32px;
-    height: 60px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-
-  .logo {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-family: var(--display);
-    font-weight: 800;
-    font-size: 18px;
-    letter-spacing: -0.5px;
-    color: var(--text);
-  }
-
-  .logo-mark {
-    width: 30px;
-    height: 30px;
-    background: linear-gradient(135deg, var(--accent), var(--accent2));
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 14px;
-    font-weight: 800;
-    color: white;
-    font-family: var(--mono);
-  }
-
-  .logo span { color: var(--text2); font-weight: 400; }
-
-  .header-actions { display: flex; gap: 10px; align-items: center; }
-
-  /* ─── BUTTONS ─── */
-  .btn {
-    padding: 8px 16px;
-    border-radius: var(--radius-xs);
-    font-family: var(--sans);
-    font-size: 13px;
-    font-weight: 500;
-    cursor: pointer;
-    border: none;
-    transition: all 0.15s ease;
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    white-space: nowrap;
-  }
-
-  .btn-primary {
-    background: var(--accent);
-    color: white;
-  }
-  .btn-primary:hover { background: #3a7af0; transform: translateY(-1px); box-shadow: 0 4px 16px rgba(79,142,247,0.35); }
-
-  .btn-secondary {
-    background: var(--surface2);
-    color: var(--text2);
-    border: 1px solid var(--border);
-  }
-  .btn-secondary:hover { background: var(--surface3); color: var(--text); }
-
-  .btn-ghost {
-    background: transparent;
-    color: var(--text2);
-    border: 1px solid transparent;
-  }
-  .btn-ghost:hover { background: var(--surface2); color: var(--text); border-color: var(--border); }
-
-  .btn-active {
-    background: var(--surface3);
-    color: var(--text);
-    border: 1px solid var(--border2);
-  }
-
-  .btn-sm { padding: 5px 10px; font-size: 12px; }
-  .btn-danger { background: rgba(240,82,82,0.15); color: var(--high); border: 1px solid rgba(240,82,82,0.25); }
-  .btn-danger:hover { background: rgba(240,82,82,0.25); }
-  .btn-success { background: rgba(34,208,122,0.12); color: var(--prime); border: 1px solid rgba(34,208,122,0.25); }
-  .btn-success:hover { background: rgba(34,208,122,0.22); }
-
-  /* ─── MAIN LAYOUT ─── */
-  main {
-    position: relative;
-    z-index: 1;
-    max-width: 1280px;
-    margin: 0 auto;
-    padding: 32px 32px 80px;
-  }
-
-  /* ─── VIEWS ─── */
-  .view { display: none; animation: fadeUp 0.25s ease; }
-  .view.active { display: block; }
-
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(12px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  /* ─── PAGE TITLE ─── */
-  .page-header {
-    margin-bottom: 28px;
-  }
-
-  .page-title {
-    font-family: var(--display);
-    font-size: 26px;
-    font-weight: 700;
-    letter-spacing: -0.5px;
-    color: var(--text);
-  }
-
-  .page-subtitle {
-    color: var(--text2);
-    font-size: 13px;
-    margin-top: 4px;
-  }
-
-  /* ─── KPI CARDS ─── */
-  .kpi-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 16px;
-    margin-bottom: 28px;
-  }
-
-  .kpi-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 20px 22px;
-    position: relative;
-    overflow: hidden;
-    transition: border-color 0.2s;
-  }
-  .kpi-card:hover { border-color: var(--border2); }
-
-  .kpi-card::after {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 2px;
-    background: linear-gradient(90deg, var(--accent), var(--accent2));
-    opacity: 0;
-    transition: opacity 0.2s;
-  }
-  .kpi-card:hover::after { opacity: 1; }
-
-  .kpi-label {
-    font-size: 11px;
-    font-weight: 500;
-    text-transform: uppercase;
-    letter-spacing: 0.8px;
-    color: var(--text3);
-    margin-bottom: 8px;
-  }
-
-  .kpi-value {
-    font-family: var(--display);
-    font-size: 32px;
-    font-weight: 700;
-    letter-spacing: -1px;
-    color: var(--text);
-    line-height: 1;
-  }
-
-  .kpi-sub {
-    font-size: 12px;
-    color: var(--text3);
-    margin-top: 6px;
-  }
-
-  .kpi-icon {
-    position: absolute;
-    right: 18px;
-    top: 16px;
-    font-size: 22px;
-    opacity: 0.15;
-  }
-
-  /* ─── SECTION CARD ─── */
-  .card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    overflow: hidden;
-  }
-
-  .card-header {
-    padding: 16px 22px;
-    border-bottom: 1px solid var(--border);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-
-  .card-title {
-    font-family: var(--display);
-    font-size: 14px;
-    font-weight: 700;
-    letter-spacing: 0.1px;
-    color: var(--text);
-  }
-
-  .card-body { padding: 22px; }
-
-  /* ─── TABLE ─── */
-  .table-wrap { overflow-x: auto; }
-
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 13px;
-  }
-
-  thead th {
-    padding: 10px 16px;
-    text-align: left;
-    font-size: 11px;
-    font-weight: 500;
-    text-transform: uppercase;
-    letter-spacing: 0.8px;
-    color: var(--text3);
-    border-bottom: 1px solid var(--border);
-    white-space: nowrap;
-  }
-
-  tbody tr {
-    border-bottom: 1px solid var(--border);
-    cursor: pointer;
-    transition: background 0.12s;
-  }
-  tbody tr:last-child { border-bottom: none; }
-  tbody tr:hover { background: var(--surface2); }
-
-  tbody td {
-    padding: 12px 16px;
-    color: var(--text2);
-    vertical-align: middle;
-  }
-
-  .td-name {
-    color: var(--text);
-    font-weight: 500;
-  }
-
-  .score-num {
-    font-family: var(--mono);
-    font-size: 15px;
-    font-weight: 500;
-  }
-
-  /* ─── BADGES ─── */
-  .badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    padding: 3px 9px;
-    border-radius: 100px;
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.3px;
-    white-space: nowrap;
-  }
-
-  .badge-prime { background: var(--prime-bg); color: var(--prime); border: 1px solid rgba(34,208,122,0.2); }
-  .badge-strong { background: var(--strong-bg); color: var(--strong); border: 1px solid rgba(79,142,247,0.2); }
-  .badge-watch { background: var(--watch-bg); color: var(--watch); border: 1px solid rgba(245,166,35,0.2); }
-  .badge-high { background: var(--high-bg); color: var(--high); border: 1px solid rgba(240,82,82,0.2); }
-
-  .badge-dot {
-    width: 6px; height: 6px;
-    border-radius: 50%;
-    display: inline-block;
-  }
-  .badge-prime .badge-dot { background: var(--prime); }
-  .badge-strong .badge-dot { background: var(--strong); }
-  .badge-watch .badge-dot { background: var(--watch); }
-  .badge-high .badge-dot { background: var(--high); }
-
-  .status-active { background: rgba(34,208,122,0.08); color: var(--prime); border: 1px solid rgba(34,208,122,0.15); }
-  .status-completed { background: rgba(139,146,168,0.1); color: var(--text2); border: 1px solid var(--border); }
-  .status-risk { background: var(--high-bg); color: var(--high); border: 1px solid rgba(240,82,82,0.2); }
-
-  /* ─── EMPTY STATE ─── */
-  .empty-state {
-    text-align: center;
-    padding: 60px 20px;
-    color: var(--text3);
-  }
-  .empty-state h3 { font-family: var(--display); font-size: 18px; color: var(--text2); margin-bottom: 8px; }
-  .empty-state p { font-size: 13px; margin-bottom: 20px; }
-
-  /* ─── FORM ─── */
-  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; margin-bottom: 28px; }
-  .form-section-title {
-    font-family: var(--display);
-    font-size: 13px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    color: var(--accent);
-    margin-bottom: 16px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-  .form-section-title::after {
-    content: '';
-    flex: 1;
-    height: 1px;
-    background: var(--border);
-  }
-
-  .form-group { margin-bottom: 16px; }
-  .form-group:last-child { margin-bottom: 0; }
-
-  label {
-    display: block;
-    font-size: 12px;
-    font-weight: 500;
-    color: var(--text2);
-    margin-bottom: 6px;
-    letter-spacing: 0.1px;
-  }
-
-  input, select {
-    width: 100%;
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-xs);
-    padding: 9px 12px;
-    color: var(--text);
-    font-family: var(--sans);
-    font-size: 13px;
-    transition: border-color 0.15s, box-shadow 0.15s;
-    appearance: none;
-  }
-
-  input:focus, select:focus {
-    outline: none;
-    border-color: var(--accent);
-    box-shadow: 0 0 0 3px rgba(79,142,247,0.12);
-  }
-
-  input::placeholder { color: var(--text3); }
-
-  select {
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238b92a8' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 12px center;
-    padding-right: 36px;
-  }
-
-  select option { background: var(--surface2); color: var(--text); }
-
-  /* ─── LIGHT MODE SPECIFIC TWEAKS ─── */
-  @media (prefers-color-scheme: light) {
-    .btn-primary { box-shadow: 0 1px 4px rgba(47,111,240,0.18); }
-    .btn-primary:hover { background: #2560d8; box-shadow: 0 4px 16px rgba(47,111,240,0.28); }
-    .kpi-card { box-shadow: 0 1px 4px rgba(15,21,32,0.06); }
-    .kpi-card:hover { box-shadow: 0 4px 16px rgba(15,21,32,0.10); }
-    .card { box-shadow: 0 1px 4px rgba(15,21,32,0.06); }
-    .result-panel { box-shadow: 0 2px 12px rgba(15,21,32,0.08); }
-    .simulate-panel { background: var(--surface2); border-color: var(--border); }
-    .detail-hero { background: linear-gradient(135deg, var(--surface2), var(--surface)); }
-    header { box-shadow: 0 1px 0 var(--border); }
-    input, select { background: var(--surface); }
-    input:focus, select:focus { box-shadow: 0 0 0 3px rgba(47,111,240,0.12); }
-    .toast { box-shadow: 0 4px 24px rgba(15,21,32,0.16); }
-    .logo-mark { box-shadow: 0 2px 8px rgba(47,111,240,0.3); }
-  }
-
-  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-
-  .form-actions {
-    display: flex;
-    gap: 12px;
-    justify-content: flex-end;
-    padding-top: 24px;
-    border-top: 1px solid var(--border);
-    margin-top: 8px;
-  }
-
-  /* ─── RESULT CARD ─── */
-  .result-panel {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    overflow: hidden;
-    margin-bottom: 24px;
-  }
-
-  .score-hero {
-    background: linear-gradient(135deg, var(--surface2), var(--surface3));
-    padding: 36px;
-    text-align: center;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .score-hero::before {
-    content: '';
-    position: absolute;
-    top: -50%;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 300px;
-    height: 300px;
-    border-radius: 50%;
-    background: radial-gradient(circle, rgba(79,142,247,0.06) 0%, transparent 70%);
-  }
-
-  .score-big {
-    font-family: var(--display);
-    font-size: 80px;
-    font-weight: 800;
-    letter-spacing: -4px;
-    line-height: 1;
-    margin-bottom: 12px;
-    position: relative;
-  }
-
-  .score-category-label {
-    font-family: var(--display);
-    font-size: 16px;
-    font-weight: 700;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    margin-bottom: 6px;
-  }
-
-  .score-desc { font-size: 13px; color: var(--text2); }
-
-  /* ─── BREAKDOWN BARS ─── */
-  .breakdown-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 0;
-    border-top: 1px solid var(--border);
-  }
-
-  .breakdown-item {
-    padding: 18px 20px;
-    border-right: 1px solid var(--border);
-    text-align: center;
-  }
-  .breakdown-item:last-child { border-right: none; }
-
-  .breakdown-label {
-    font-size: 11px;
-    text-transform: uppercase;
-    letter-spacing: 0.8px;
-    color: var(--text3);
-    margin-bottom: 6px;
-  }
-
-  .breakdown-val {
-    font-family: var(--mono);
-    font-size: 20px;
-    font-weight: 500;
-    color: var(--text);
-  }
-
-  .breakdown-bar-wrap {
-    margin-top: 8px;
-    height: 3px;
-    background: var(--border);
-    border-radius: 2px;
-    overflow: hidden;
-  }
-
-  .breakdown-bar {
-    height: 100%;
-    border-radius: 2px;
-    transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-
-  /* ─── LOAN RECOMMENDATION ─── */
-  .loan-rec {
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 20px 24px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 20px;
-  }
-
-  .loan-rec-label { font-size: 12px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.8px; }
-  .loan-rec-amount { font-family: var(--display); font-size: 28px; font-weight: 700; color: var(--prime); margin-top: 4px; }
-  .loan-rec-note { font-size: 12px; color: var(--text2); margin-top: 3px; }
-
-  /* ─── ADMIN / ANALYTICS ─── */
-  .analytics-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 20px;
-    margin-top: 24px;
-  }
-
-  .dist-bar-chart { padding: 4px 0; }
-
-  .dist-row {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 14px;
-  }
-  .dist-row:last-child { margin-bottom: 0; }
-
-  .dist-label {
-    width: 64px;
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.5px;
-    text-transform: uppercase;
-    text-align: right;
-  }
-
-  .dist-track {
-    flex: 1;
-    height: 24px;
-    background: var(--surface2);
-    border-radius: var(--radius-xs);
-    overflow: hidden;
-    border: 1px solid var(--border);
-  }
-
-  .dist-fill {
-    height: 100%;
-    border-radius: var(--radius-xs);
-    display: flex;
-    align-items: center;
-    padding-left: 10px;
-    font-size: 11px;
-    font-weight: 600;
-    color: white;
-    transition: width 0.7s cubic-bezier(0.4, 0, 0.2, 1);
-    min-width: 30px;
-  }
-
-  .dist-count { font-size: 13px; color: var(--text2); width: 28px; font-family: var(--mono); }
-
-  /* ─── CANVAS CHART ─── */
-  .chart-container {
-    position: relative;
-    height: 200px;
-    padding: 10px 0;
-  }
-
-  canvas { width: 100% !important; }
-
-  /* ─── DETAIL VIEW ─── */
-  .detail-hero {
-    background: linear-gradient(135deg, var(--surface2), var(--bg));
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 28px 32px;
-    margin-bottom: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 20px;
-  }
-
-  .detail-name {
-    font-family: var(--display);
-    font-size: 24px;
-    font-weight: 700;
-    margin-bottom: 8px;
-  }
-
-  .detail-meta {
-    display: flex;
-    gap: 16px;
-    flex-wrap: wrap;
-    align-items: center;
-  }
-
-  .detail-meta-item {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 13px;
-    color: var(--text2);
-  }
-
-  .detail-score-col { text-align: right; }
-
-  .detail-score {
-    font-family: var(--display);
-    font-size: 52px;
-    font-weight: 800;
-    letter-spacing: -2px;
-    line-height: 1;
-    margin-bottom: 8px;
-  }
-
-  .detail-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 20px;
-    margin-bottom: 20px;
-  }
-
-  .info-group {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-
-  .info-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 0;
-    border-bottom: 1px solid var(--border);
-  }
-  .info-row:last-child { border-bottom: none; }
-
-  .info-row-label { font-size: 12px; color: var(--text3); }
-  .info-row-val { font-size: 13px; color: var(--text); font-weight: 500; font-family: var(--mono); }
-
-  /* ─── SIMULATE PANEL ─── */
-  .simulate-panel {
-    background: var(--surface2);
-    border: 1px solid var(--border2);
-    border-radius: var(--radius);
-    padding: 20px 24px;
-    margin-top: 20px;
-  }
-
-  .simulate-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 16px;
-  }
-
-  .sim-inputs { display: flex; gap: 16px; align-items: flex-end; flex-wrap: wrap; }
-  .sim-inputs .form-group { margin-bottom: 0; flex: 1; min-width: 140px; }
-
-  .sim-result {
-    margin-top: 16px;
-    padding: 14px 18px;
-    border-radius: var(--radius-sm);
-    background: var(--surface3);
-    border: 1px solid var(--border2);
-    display: none;
-  }
-  .sim-result.show { display: block; }
-
-  .sim-result-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-
-  .sim-score { font-family: var(--mono); font-size: 28px; font-weight: 500; }
-
-  /* ─── STATUS UPDATE ─── */
-  .status-selector {
-    display: flex;
-    gap: 8px;
-  }
-
-  /* ─── NOTIFICATION ─── */
-  .toast {
-    position: fixed;
-    bottom: 24px;
-    right: 24px;
-    background: var(--surface2);
-    border: 1px solid var(--border2);
-    border-radius: var(--radius-sm);
-    padding: 12px 18px;
-    font-size: 13px;
-    color: var(--text);
-    box-shadow: var(--shadow-lg);
-    z-index: 999;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    transform: translateY(100px);
-    opacity: 0;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-  .toast.show { transform: translateY(0); opacity: 1; }
-  .toast-icon { font-size: 16px; }
-
-  /* ─── TABS ─── */
-  .tabs {
-    display: flex;
-    gap: 2px;
-    background: var(--surface2);
-    border-radius: var(--radius-sm);
-    padding: 3px;
-    margin-bottom: 20px;
-    width: fit-content;
-  }
-
-  .tab {
-    padding: 7px 16px;
-    border-radius: var(--radius-xs);
-    font-size: 13px;
-    font-weight: 500;
-    color: var(--text2);
-    cursor: pointer;
-    transition: all 0.15s;
-    background: transparent;
-    border: none;
-    font-family: var(--sans);
-  }
-  .tab.active { background: var(--surface3); color: var(--text); border: 1px solid var(--border); }
-  .tab:hover:not(.active) { color: var(--text); }
-
-  /* ─── BACK BUTTON ─── */
-  .back-link {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 13px;
-    color: var(--text2);
-    cursor: pointer;
-    margin-bottom: 20px;
-    padding: 6px 0;
-    transition: color 0.15s;
-    background: none;
-    border: none;
-    font-family: var(--sans);
-  }
-  .back-link:hover { color: var(--text); }
-
-  /* ─── DIVIDER ─── */
-  .divider {
-    height: 1px;
-    background: var(--border);
-    margin: 24px 0;
-  }
-
-  /* ─── RESPONSIVE ─── */
-  @media (max-width: 900px) {
-    .kpi-grid { grid-template-columns: 1fr 1fr; }
-    .form-grid { grid-template-columns: 1fr; }
-    .breakdown-grid { grid-template-columns: 1fr 1fr; }
-    .analytics-grid { grid-template-columns: 1fr; }
-    .detail-grid { grid-template-columns: 1fr; }
-  }
-
-  @media (max-width: 640px) {
-    main { padding: 20px 16px 60px; }
-    header { padding: 0 16px; }
-    .kpi-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
-    .kpi-value { font-size: 24px; }
-    .score-big { font-size: 60px; }
-    .breakdown-grid { grid-template-columns: 1fr 1fr; }
-    .detail-hero { flex-direction: column; }
-    .detail-score-col { text-align: left; }
-  }
-
-  /* ─── UTILITY ─── */
-  .flex { display: flex; }
-  .flex-between { display: flex; align-items: center; justify-content: space-between; }
-  .gap-8 { gap: 8px; }
-  .gap-12 { gap: 12px; }
-  .mt-8 { margin-top: 8px; }
-  .mt-16 { margin-top: 16px; }
-  .mt-20 { margin-top: 20px; }
-  .mt-24 { margin-top: 24px; }
-  .mb-20 { margin-bottom: 20px; }
-  .text-sm { font-size: 12px; }
-  .text-muted { color: var(--text2); }
-  .text-dim { color: var(--text3); }
-  .mono { font-family: var(--mono); }
-  .tag { background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius-xs); padding: 2px 8px; font-size: 11px; color: var(--text2); }
-
-  /* Input toggle (yes/no) */
-  .toggle-group { display: flex; gap: 6px; }
-  .toggle-opt {
-    flex: 1;
-    padding: 8px;
-    text-align: center;
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-xs);
-    cursor: pointer;
-    font-size: 13px;
-    color: var(--text2);
-    transition: all 0.12s;
-    font-family: var(--sans);
-  }
-  .toggle-opt.selected { background: var(--accent); border-color: var(--accent); color: white; }
-
-  /* Section spacing */
-  .section + .section { margin-top: 28px; }
-
-  .highlight-line {
-    display: inline-block;
-    width: 3px;
-    height: 16px;
-    border-radius: 2px;
-    margin-right: 8px;
-    vertical-align: middle;
-  }
+    --cream: #0F0D08;
+    --cream2: #1A1610;
+    --cream3: #252018;
+    --ink: #F0EBE0;
+    --ink2: #C4B8A8;
+    --ink3: #8B7D6B;
+    --ink4: #4A3F2F;
+    --white: #1A1610;
+    --border: #2A2418;
+    --border2: #3A3228;
+    --red-xlight: #2A1210;
+    --red-light: #3D1A18;
+    --prime-bg: #0A2018;
+    --strong-bg: #0A1828;
+    --watch-bg: #281808;
+    --high-bg: #2A1010;
+    --shadow-sm: 0 1px 4px rgba(0,0,0,0.3);
+    --shadow: 0 4px 20px rgba(0,0,0,0.4);
+    --shadow-lg: 0 12px 48px rgba(0,0,0,0.5);
+  }
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--cream);color:var(--ink);font-family:var(--sans);font-size:14px;line-height:1.6;min-height:100vh;}
+
+/* ── LOGIN SCREEN ── */
+#login-screen{position:fixed;inset:0;z-index:1000;background:var(--cream);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:0;}
+.login-wrap{width:100%;max-width:440px;padding:24px;}
+.login-logo{font-family:var(--serif);font-size:42px;color:var(--red);letter-spacing:-1px;margin-bottom:4px;}
+.login-tagline{font-size:13px;color:var(--ink3);margin-bottom:40px;}
+.portal-tabs{display:flex;gap:0;background:var(--cream2);border-radius:var(--r-sm);padding:4px;margin-bottom:28px;border:1px solid var(--border);}
+.portal-tab{flex:1;padding:10px;text-align:center;font-size:13px;font-weight:500;color:var(--ink3);cursor:pointer;border-radius:6px;transition:all .15s;}
+.portal-tab.active{background:var(--white);color:var(--ink);box-shadow:var(--shadow-sm);border:1px solid var(--border);}
+.login-card{background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:28px;box-shadow:var(--shadow);}
+.login-card h2{font-family:var(--serif);font-size:22px;font-weight:400;margin-bottom:6px;color:var(--ink);}
+.login-card p{font-size:12px;color:var(--ink3);margin-bottom:24px;}
+.form-group{margin-bottom:16px;}
+.form-group label{display:block;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.6px;color:var(--ink3);margin-bottom:6px;}
+.form-group input,.form-group select,.form-group textarea{width:100%;background:var(--cream2);border:1px solid var(--border);border-radius:var(--r-sm);padding:10px 12px;color:var(--ink);font-family:var(--sans);font-size:13px;transition:border-color .15s,box-shadow .15s;}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{outline:none;border-color:var(--red);box-shadow:0 0 0 3px rgba(192,57,43,.1);}
+.form-group input::placeholder,.form-group textarea::placeholder{color:var(--ink4);}
+.hint-row{display:flex;gap:8px;margin-bottom:20px;}
+.hint{flex:1;background:var(--cream2);border:1px solid var(--border);border-radius:var(--r-sm);padding:10px 12px;font-size:11px;color:var(--ink3);}
+.hint strong{display:block;color:var(--ink2);font-size:12px;margin-bottom:2px;}
+.btn-login{width:100%;padding:12px;background:var(--red);color:#fff;border:none;border-radius:var(--r-sm);font-family:var(--sans);font-size:14px;font-weight:600;cursor:pointer;transition:all .15s;}
+.btn-login:hover{background:var(--red2);transform:translateY(-1px);box-shadow:0 4px 16px rgba(192,57,43,.3);}
+.login-error{background:var(--high-bg);color:var(--red);border:1px solid rgba(192,57,43,.2);border-radius:var(--r-sm);padding:10px 14px;font-size:12px;margin-top:12px;display:none;}
+
+/* ── APP SHELL ── */
+#app{display:none;}
+header{position:sticky;top:0;z-index:100;background:rgba(253,251,244,.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:0 28px;height:58px;display:flex;align-items:center;justify-content:space-between;}
+@media(prefers-color-scheme:dark){header{background:rgba(15,13,8,.92);}}
+.header-left{display:flex;align-items:center;gap:12px;}
+.h-logo{font-family:var(--serif);font-size:24px;color:var(--red);letter-spacing:-.5px;}
+.h-portal-badge{background:var(--red-xlight);color:var(--red);border:1px solid var(--red-light);border-radius:100px;padding:3px 10px;font-size:11px;font-weight:600;letter-spacing:.3px;}
+.header-nav{display:flex;gap:2px;}
+.nav-btn{padding:7px 14px;border-radius:var(--r-sm);font-size:13px;font-weight:500;color:var(--ink3);cursor:pointer;transition:all .15s;background:none;border:none;font-family:var(--sans);}
+.nav-btn:hover{background:var(--cream2);color:var(--ink);}
+.nav-btn.active{background:var(--cream2);color:var(--ink);border:1px solid var(--border);}
+.header-right{display:flex;align-items:center;gap:10px;}
+.user-pill{display:flex;align-items:center;gap:8px;padding:6px 12px;background:var(--cream2);border:1px solid var(--border);border-radius:100px;font-size:12px;color:var(--ink2);}
+.user-avatar{width:22px;height:22px;background:var(--red);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;}
+.btn-logout{padding:6px 12px;border-radius:var(--r-sm);font-size:12px;color:var(--ink3);cursor:pointer;background:none;border:1px solid var(--border);font-family:var(--sans);}
+.btn-logout:hover{background:var(--cream2);}
+
+/* ── MAIN ── */
+main{max-width:1320px;margin:0 auto;padding:28px 28px 80px;}
+.view{display:none;animation:fadeUp .2s ease;}
+.view.active{display:block;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── PAGE HEADER ── */
+.page-hd{margin-bottom:24px;}
+.page-title{font-family:var(--serif);font-size:28px;font-weight:400;color:var(--ink);letter-spacing:-.3px;}
+.page-sub{font-size:13px;color:var(--ink3);margin-top:4px;}
+
+/* ── CARDS ── */
+.card{background:var(--white);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;box-shadow:var(--shadow-sm);}
+.card-hd{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.card-title{font-size:13px;font-weight:600;color:var(--ink);}
+.card-body{padding:20px;}
+
+/* ── KPI GRID ── */
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px;}
+.kpi{background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:18px 20px;box-shadow:var(--shadow-sm);position:relative;overflow:hidden;}
+.kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--red),#E74C3C);}
+.kpi-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.7px;color:var(--ink3);margin-bottom:8px;}
+.kpi-val{font-family:var(--serif);font-size:32px;color:var(--ink);line-height:1;letter-spacing:-1px;}
+.kpi-sub{font-size:11px;color:var(--ink3);margin-top:6px;}
+
+/* ── GRID LAYOUTS ── */
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px;}
+.gap-16{gap:16px;}
+.mt-20{margin-top:20px;}
+.mt-16{margin-top:16px;}
+.mb-20{margin-bottom:20px;}
+
+/* ── BUTTONS ── */
+.btn{padding:8px 16px;border-radius:var(--r-sm);font-size:13px;font-weight:500;cursor:pointer;border:none;font-family:var(--sans);display:inline-flex;align-items:center;gap:6px;transition:all .15s;white-space:nowrap;}
+.btn-primary{background:var(--red);color:#fff;}
+.btn-primary:hover{background:var(--red2);transform:translateY(-1px);box-shadow:0 4px 14px rgba(192,57,43,.3);}
+.btn-secondary{background:var(--cream2);color:var(--ink2);border:1px solid var(--border);}
+.btn-secondary:hover{background:var(--cream3);color:var(--ink);}
+.btn-ghost{background:transparent;color:var(--ink3);border:1px solid transparent;}
+.btn-ghost:hover{background:var(--cream2);color:var(--ink);border-color:var(--border);}
+.btn-sm{padding:5px 10px;font-size:12px;}
+.btn-success{background:var(--prime-bg);color:var(--prime);border:1px solid rgba(10,124,78,.2);}
+.btn-danger{background:var(--high-bg);color:var(--red);border:1px solid rgba(192,57,43,.2);}
+.btn-warn{background:var(--watch-bg);color:var(--watch);border:1px solid rgba(183,103,10,.2);}
+
+/* ── TABLE ── */
+.table-wrap{overflow-x:auto;}
+table{width:100%;border-collapse:collapse;font-size:13px;}
+thead th{padding:10px 14px;text-align:left;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.7px;color:var(--ink3);border-bottom:1px solid var(--border);white-space:nowrap;}
+tbody tr{border-bottom:1px solid var(--border);cursor:pointer;transition:background .1s;}
+tbody tr:last-child{border-bottom:none;}
+tbody tr:hover{background:var(--cream2);}
+tbody td{padding:12px 14px;color:var(--ink2);vertical-align:middle;}
+.td-name{color:var(--ink);font-weight:500;}
+
+/* ── BADGES ── */
+.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:100px;font-size:11px;font-weight:600;}
+.badge-prime{background:var(--prime-bg);color:var(--prime);border:1px solid rgba(10,124,78,.15);}
+.badge-strong{background:var(--strong-bg);color:var(--strong);border:1px solid rgba(26,86,160,.15);}
+.badge-watch{background:var(--watch-bg);color:var(--watch);border:1px solid rgba(183,103,10,.15);}
+.badge-high{background:var(--high-bg);color:var(--high);border:1px solid rgba(192,57,43,.15);}
+.badge-pending{background:var(--cream2);color:var(--ink3);border:1px solid var(--border);}
+.badge-active{background:var(--prime-bg);color:var(--prime);border:1px solid rgba(10,124,78,.15);}
+.badge-dot{width:5px;height:5px;border-radius:50%;background:currentColor;display:inline-block;}
+
+/* ── FORM ── */
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.form-row-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;}
+.form-section{margin-bottom:28px;}
+.form-section-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--red);margin-bottom:14px;display:flex;align-items:center;gap:8px;}
+.form-section-title::after{content:'';flex:1;height:1px;background:var(--border);}
+.form-actions{display:flex;gap:10px;justify-content:flex-end;padding-top:20px;border-top:1px solid var(--border);}
+.toggle-group{display:flex;gap:6px;}
+.toggle-opt{flex:1;padding:9px;text-align:center;background:var(--cream2);border:1px solid var(--border);border-radius:var(--r-sm);cursor:pointer;font-size:13px;color:var(--ink3);transition:all .12s;font-family:var(--sans);}
+.toggle-opt.sel{background:var(--red);border-color:var(--red);color:#fff;}
+
+/* ── SCORE DISPLAY ── */
+.score-hero{background:linear-gradient(135deg,var(--cream2),var(--cream3));border-radius:var(--r);padding:32px;text-align:center;border:1px solid var(--border);margin-bottom:20px;}
+.score-number{font-family:var(--serif);font-size:80px;line-height:1;letter-spacing:-3px;}
+.score-label{font-size:14px;font-weight:600;letter-spacing:2px;text-transform:uppercase;margin-top:8px;}
+.score-desc{font-size:13px;color:var(--ink3);margin-top:6px;}
+.breakdown-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:0;border:1px solid var(--border);border-radius:var(--r);overflow:hidden;background:var(--white);}
+.breakdown-item{padding:16px;text-align:center;border-right:1px solid var(--border);}
+.breakdown-item:last-child{border-right:none;}
+.bd-label{font-size:10px;text-transform:uppercase;letter-spacing:.7px;color:var(--ink3);margin-bottom:6px;}
+.bd-val{font-family:var(--mono);font-size:18px;font-weight:500;color:var(--ink);}
+.bd-bar{margin-top:8px;height:3px;background:var(--border);border-radius:2px;overflow:hidden;}
+.bd-fill{height:100%;border-radius:2px;transition:width .6s ease;}
+
+/* ── DSCR BOX ── */
+.dscr-box{background:var(--cream2);border:1px solid var(--border);border-radius:var(--r-sm);padding:16px 20px;margin-top:14px;}
+.dscr-formula{font-family:var(--mono);font-size:13px;color:var(--ink2);text-align:center;padding:10px 0;border:1px dashed var(--border);border-radius:var(--r-sm);background:var(--white);}
+.gate-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);}
+.gate-row:last-child{border-bottom:none;}
+.gate-status{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.gate-pass{background:var(--prime);}
+.gate-fail{background:var(--red);}
+.gate-warn{background:var(--watch);}
+
+/* ── ADMIN ENGINE ── */
+.engine-module{background:var(--white);border:1px solid var(--border);border-radius:var(--r);margin-bottom:14px;overflow:hidden;}
+.engine-module-hd{padding:14px 18px;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--border);background:var(--cream2);}
+.engine-module-title{font-size:13px;font-weight:600;color:var(--ink);flex:1;}
+.engine-weight-input{width:60px;background:var(--white);border:1px solid var(--border);border-radius:var(--r-sm);padding:5px 8px;font-family:var(--mono);font-size:13px;color:var(--ink);text-align:center;}
+.engine-weight-pct{font-size:12px;color:var(--ink3);margin-left:4px;}
+.weight-bar{height:4px;background:var(--border);border-radius:2px;margin:0 18px 14px;overflow:hidden;}
+.weight-fill{height:100%;background:var(--red);border-radius:2px;transition:width .3s;}
+.metric-list{padding:0 18px 14px;}
+.metric-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);}
+.metric-row:last-child{border-bottom:none;}
+.metric-toggle{width:36px;height:20px;background:var(--border);border-radius:10px;cursor:pointer;position:relative;transition:background .15s;flex-shrink:0;}
+.metric-toggle.on{background:var(--red);}
+.metric-toggle::after{content:'';position:absolute;top:2px;left:2px;width:16px;height:16px;background:white;border-radius:50%;transition:transform .15s;}
+.metric-toggle.on::after{transform:translateX(16px);}
+.metric-name{flex:1;font-size:13px;color:var(--ink2);}
+.metric-desc{font-size:11px;color:var(--ink3);}
+.metric-pts{font-family:var(--mono);font-size:12px;color:var(--ink3);background:var(--cream2);padding:2px 8px;border-radius:100px;border:1px solid var(--border);}
+.add-metric-form{padding:14px 18px;background:var(--cream2);border-top:1px solid var(--border);display:none;}
+.total-weight-bar{background:var(--cream2);border:1px solid var(--border);border-radius:var(--r-sm);padding:12px 16px;display:flex;align-items:center;gap:16px;margin-bottom:16px;}
+.weight-total-val{font-family:var(--mono);font-size:18px;font-weight:500;}
+.weight-total-label{font-size:12px;color:var(--ink3);}
+
+/* ── BANK STATEMENT PARSER ── */
+.upload-zone{border:2px dashed var(--border2);border-radius:var(--r);padding:40px;text-align:center;cursor:pointer;transition:all .15s;background:var(--cream2);}
+.upload-zone:hover{border-color:var(--red);background:var(--red-xlight);}
+.upload-zone.dragging{border-color:var(--red);background:var(--red-xlight);}
+.upload-icon{font-size:36px;margin-bottom:12px;opacity:.5;}
+.upload-title{font-size:15px;font-weight:600;color:var(--ink);margin-bottom:4px;}
+.upload-sub{font-size:12px;color:var(--ink3);}
+.parsed-preview{background:var(--cream2);border:1px solid var(--border);border-radius:var(--r);padding:20px;margin-top:16px;}
+.parsed-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);}
+.parsed-row:last-child{border-bottom:none;}
+.parsed-label{font-size:12px;color:var(--ink3);}
+.parsed-val{font-family:var(--mono);font-size:13px;color:var(--ink);font-weight:500;}
+.parsed-val.positive{color:var(--prime);}
+.parsed-val.negative{color:var(--red);}
+.month-bars{display:flex;gap:6px;align-items:flex-end;height:80px;margin-top:16px;}
+.month-bar-wrap{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;}
+.month-bar{width:100%;border-radius:3px 3px 0 0;transition:height .4s ease;min-height:4px;}
+.month-bar.credit{background:var(--prime);}
+.month-bar.debit{background:var(--red);opacity:.6;}
+.month-label{font-size:9px;color:var(--ink3);}
+
+/* ── APPLICATION STATUS ── */
+.status-timeline{display:flex;flex-direction:column;gap:0;}
+.timeline-item{display:flex;gap:16px;position:relative;}
+.timeline-item::before{content:'';position:absolute;left:15px;top:32px;bottom:0;width:1px;background:var(--border);}
+.timeline-item:last-child::before{display:none;}
+.timeline-dot{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;border:2px solid var(--border);background:var(--white);}
+.timeline-dot.done{background:var(--prime);border-color:var(--prime);color:#fff;}
+.timeline-dot.active{background:var(--red);border-color:var(--red);color:#fff;animation:pulse 2s infinite;}
+.timeline-dot.pending{background:var(--cream2);color:var(--ink3);}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(192,57,43,.3)}50%{box-shadow:0 0 0 8px rgba(192,57,43,0)}}
+.timeline-content{padding-bottom:20px;}
+.timeline-title{font-size:13px;font-weight:600;color:var(--ink);}
+.timeline-sub{font-size:12px;color:var(--ink3);}
+
+/* ── CALCULATION TRANSPARENCY ── */
+.calc-step{background:var(--cream2);border:1px solid var(--border);border-radius:var(--r-sm);padding:12px 16px;margin-bottom:8px;}
+.calc-step-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--ink3);margin-bottom:8px;}
+.calc-line{display:flex;justify-content:space-between;align-items:center;font-size:12px;color:var(--ink2);padding:3px 0;}
+.calc-line .val{font-family:var(--mono);font-weight:500;color:var(--ink);}
+.calc-line .val.pos{color:var(--prime);}
+.calc-line .val.neg{color:var(--red);}
+.calc-total{border-top:1px solid var(--border2);margin-top:6px;padding-top:6px;font-weight:600;}
+.formula-box{background:var(--ink);color:var(--cream);border-radius:var(--r-sm);padding:12px 16px;font-family:var(--mono);font-size:12px;margin-top:12px;line-height:1.8;}
+
+/* ── TOAST ── */
+.toast{position:fixed;bottom:24px;right:24px;background:var(--ink);color:var(--cream);border-radius:var(--r-sm);padding:12px 18px;font-size:13px;box-shadow:var(--shadow-lg);z-index:999;display:flex;align-items:center;gap:10px;transform:translateY(100px);opacity:0;transition:all .3s cubic-bezier(.4,0,.2,1);}
+.toast.show{transform:translateY(0);opacity:1;}
+
+/* ── EMPTY STATE ── */
+.empty{text-align:center;padding:48px 20px;}
+.empty h3{font-family:var(--serif);font-size:20px;font-weight:400;color:var(--ink2);margin-bottom:8px;}
+.empty p{font-size:13px;color:var(--ink3);margin-bottom:20px;}
+
+/* ── UTILITY ── */
+.flex{display:flex;}.flex-between{display:flex;align-items:center;justify-content:space-between;}.gap-8{gap:8px;}.gap-10{gap:10px;}.gap-12{gap:12px;}
+.text-sm{font-size:12px;}.text-muted{color:var(--ink3);}.text-mono{font-family:var(--mono);}
+.divider{height:1px;background:var(--border);margin:20px 0;}
+.tag{background:var(--cream2);border:1px solid var(--border);border-radius:100px;padding:2px 9px;font-size:11px;color:var(--ink2);}
+.hard-gate-badge{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:100px;font-size:11px;font-weight:600;}
+.gate-pass-badge{background:var(--prime-bg);color:var(--prime);}
+.gate-fail-badge{background:var(--high-bg);color:var(--red);}
+.gate-warn-badge{background:var(--watch-bg);color:var(--watch);}
+select option{background:var(--white);color:var(--ink);}
+select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238B7D6B' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:36px;}
+@media(max-width:900px){.kpi-grid{grid-template-columns:1fr 1fr;}.grid-2,.grid-3{grid-template-columns:1fr;}.breakdown-grid{grid-template-columns:1fr 1fr;}.form-row,.form-row-3{grid-template-columns:1fr;}}
+@media(max-width:640px){main{padding:16px 16px 60px;}header{padding:0 16px;}.header-nav{display:none;}}
 </style>
 </head>
 <body>
 
-<!-- ─── HEADER ─── -->
-<header>
-  <div class="logo">
-    <div class="logo-mark">RE</div>
-    Risk Engine <span>/ v2</span>
-  </div>
-  <div class="header-actions">
-    <button class="btn btn-ghost" onclick="showView('dashboard')" id="btn-dash">Dashboard</button>
-    <button class="btn btn-ghost" onclick="showView('admin')" id="btn-admin">Admin</button>
-    <button class="btn btn-primary" onclick="showView('assessment')">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-      New Assessment
-    </button>
-  </div>
-</header>
-
-<!-- ─── MAIN ─── -->
-<main>
-
-  <!-- ═══════════════════════════════════════ DASHBOARD ═══ -->
-  <div class="view active" id="view-dashboard">
-    <div class="page-header flex-between">
-      <div>
-        <div class="page-title">Dashboard</div>
-        <div class="page-subtitle">Borrower portfolio overview · Real-time risk monitoring</div>
-      </div>
-      <div class="flex gap-8">
-        <button class="btn btn-secondary btn-sm" onclick="seedDemo()">Seed Demo Data</button>
-      </div>
+<!-- ══════════════════════════════════════════ LOGIN ══════ -->
+<div id="login-screen">
+  <div class="login-wrap">
+    <div class="login-logo">tutum</div>
+    <div class="login-tagline">Hybrid Lending Platform · Singapore</div>
+    <div class="portal-tabs">
+      <div class="portal-tab active" onclick="selectPortal('customer',this)">SME Borrower Portal</div>
+      <div class="portal-tab" onclick="selectPortal('admin',this)">Admin / Underwriting</div>
     </div>
-
-    <div class="kpi-grid">
-      <div class="kpi-card">
-        <div class="kpi-label">Total Borrowers</div>
-        <div class="kpi-value" id="kpi-total">0</div>
-        <div class="kpi-sub">All assessments</div>
-        <div class="kpi-icon">👥</div>
+    <div class="login-card">
+      <h2 id="login-title">Apply for a business loan</h2>
+      <p id="login-desc">Access working capital in 2–5 days. No branch visit required.</p>
+      <div class="hint-row" id="demo-hints">
+        <div class="hint"><strong>SME Demo</strong>user: sme@tutum.so<br>pass: tutum2026</div>
+        <div class="hint"><strong>Admin Demo</strong>user: admin@tutum.so<br>pass: admin2026</div>
       </div>
-      <div class="kpi-card">
-        <div class="kpi-label">Avg Risk Score</div>
-        <div class="kpi-value" id="kpi-avg">—</div>
-        <div class="kpi-sub">Weighted average</div>
-        <div class="kpi-icon">📊</div>
+      <div class="form-group">
+        <label>Email address</label>
+        <input type="email" id="login-email" placeholder="you@company.com">
       </div>
-      <div class="kpi-card">
-        <div class="kpi-label">Active Loans</div>
-        <div class="kpi-value" id="kpi-active">0</div>
-        <div class="kpi-sub">Currently disbursed</div>
-        <div class="kpi-icon">💳</div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" id="login-pass" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()">
       </div>
-      <div class="kpi-card">
-        <div class="kpi-label">Default Rate</div>
-        <div class="kpi-value" id="kpi-default">—</div>
-        <div class="kpi-sub">At-risk borrowers</div>
-        <div class="kpi-icon">⚠️</div>
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="card-header">
-        <span class="card-title">Borrower Portfolio</span>
-        <div class="flex gap-8">
-          <input type="text" id="search-input" placeholder="Search borrowers…" style="width:200px;padding:6px 10px;font-size:12px;" oninput="filterTable()">
-        </div>
-      </div>
-      <div class="table-wrap">
-        <table id="borrower-table">
-          <thead>
-            <tr>
-              <th>Borrower</th>
-              <th>Industry</th>
-              <th>Score</th>
-              <th>Risk Category</th>
-              <th>Loan Amount</th>
-              <th>Status</th>
-              <th>Date</th>
-            </tr>
-          </thead>
-          <tbody id="table-body">
-          </tbody>
-        </table>
-        <div class="empty-state" id="empty-state" style="display:none;">
-          <h3>No borrowers yet</h3>
-          <p>Run your first risk assessment to populate the dashboard.</p>
-          <button class="btn btn-primary" onclick="showView('assessment')">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-            New Assessment
-          </button>
-        </div>
-      </div>
+      <button class="btn-login" onclick="doLogin()">Sign in →</button>
+      <div class="login-error" id="login-error">Invalid credentials. Please check and try again.</div>
     </div>
   </div>
-
-  <!-- ═══════════════════════════════════════ ASSESSMENT ═══ -->
-  <div class="view" id="view-assessment">
-    <button class="back-link" onclick="showView('dashboard')">
-      ← Back to Dashboard
-    </button>
-    <div class="page-header">
-      <div class="page-title">New Risk Assessment</div>
-      <div class="page-subtitle">Multi-factor underwriting · V2 Scoring Model</div>
-    </div>
-
-    <div class="form-grid">
-      <!-- Business Info -->
-      <div class="card">
-        <div class="card-body">
-          <div class="form-section-title">Business Info</div>
-
-          <div class="form-group">
-            <label>Business Name *</label>
-            <input type="text" id="f-name" placeholder="Acme Pvt Ltd">
-          </div>
-
-          <div class="form-group">
-            <label>Industry *</label>
-            <select id="f-industry">
-              <option value="fnb">Food & Beverage</option>
-              <option value="tech">Technology</option>
-              <option value="retail">Retail</option>
-              <option value="manufacturing">Manufacturing</option>
-              <option value="services">Professional Services</option>
-              <option value="healthcare">Healthcare</option>
-              <option value="logistics">Logistics</option>
-              <option value="ecommerce">E-Commerce</option>
-            </select>
-          </div>
-
-          <div class="form-row">
-            <div class="form-group">
-              <label>Business Age (years)</label>
-              <input type="number" id="f-age" min="0" step="0.5" placeholder="3">
-            </div>
-            <div class="form-group">
-              <label>Monthly Revenue (₹)</label>
-              <input type="number" id="f-revenue" min="0" placeholder="50000">
-            </div>
-          </div>
-
-          <div class="form-section-title mt-20">Financial Metrics</div>
-
-          <div class="form-row">
-            <div class="form-group">
-              <label>Profit Margin (%)</label>
-              <input type="number" id="f-margin" min="-100" max="100" placeholder="15">
-            </div>
-            <div class="form-group">
-              <label>Cash Buffer (months)</label>
-              <input type="number" id="f-cashbuffer" min="0" step="0.5" placeholder="3">
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label>Existing Debt (₹)</label>
-            <input type="number" id="f-debt" min="0" placeholder="10000">
-          </div>
-        </div>
-      </div>
-
-      <!-- Behavioral -->
-      <div class="card">
-        <div class="card-body">
-          <div class="form-section-title">Behavioral Signals</div>
-
-          <div class="form-group">
-            <label>Past Defaults</label>
-            <div class="toggle-group">
-              <button class="toggle-opt selected" onclick="selectToggle('defaults', 'no', this)">No Defaults</button>
-              <button class="toggle-opt" onclick="selectToggle('defaults', 'yes', this)">Has Defaulted</button>
-            </div>
-            <input type="hidden" id="f-defaults" value="no">
-          </div>
-
-          <div class="form-group mt-16">
-            <label>Payment Delay (avg days)</label>
-            <input type="number" id="f-delay" min="0" placeholder="3">
-          </div>
-
-          <div class="form-group mt-16">
-            <label>Revenue Trend</label>
-            <div class="toggle-group">
-              <button class="toggle-opt selected" onclick="selectToggle('trend', 'growth', this)">📈 Growth</button>
-              <button class="toggle-opt" onclick="selectToggle('trend', 'stable', this)">➡️ Stable</button>
-              <button class="toggle-opt" onclick="selectToggle('trend', 'decline', this)">📉 Decline</button>
-            </div>
-            <input type="hidden" id="f-trend" value="growth">
-          </div>
-
-          <div class="divider"></div>
-
-          <div class="form-section-title">Scoring Preview</div>
-
-          <div id="score-preview" style="text-align:center;padding:20px 0;color:var(--text3);">
-            <div style="font-size:13px;">Fill form to see live score preview</div>
-          </div>
-
-          <div class="form-actions" style="justify-content:stretch;">
-            <button class="btn btn-ghost" onclick="clearForm()">Clear</button>
-            <button class="btn btn-secondary" onclick="previewScore()" style="flex:1">Preview Score</button>
-            <button class="btn btn-primary" onclick="submitAssessment()" style="flex:1">
-              Run Assessment →
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ═══════════════════════════════════════ RESULT ═══ -->
-  <div class="view" id="view-result">
-    <button class="back-link" onclick="showView('assessment')">
-      ← New Assessment
-    </button>
-
-    <div class="result-panel">
-      <div class="score-hero" id="score-hero">
-        <div class="score-big" id="result-score">—</div>
-        <div class="score-category-label" id="result-cat">—</div>
-        <div class="score-desc" id="result-desc">—</div>
-      </div>
-      <div class="breakdown-grid">
-        <div class="breakdown-item">
-          <div class="breakdown-label">Base Score</div>
-          <div class="breakdown-val" id="r-base">—</div>
-          <div class="breakdown-bar-wrap"><div class="breakdown-bar" id="bar-base" style="background: var(--accent); width:0"></div></div>
-        </div>
-        <div class="breakdown-item">
-          <div class="breakdown-label">Momentum</div>
-          <div class="breakdown-val" id="r-momentum">—</div>
-          <div class="breakdown-bar-wrap"><div class="breakdown-bar" id="bar-momentum" style="background: var(--accent2); width:0"></div></div>
-        </div>
-        <div class="breakdown-item">
-          <div class="breakdown-label">Reliability</div>
-          <div class="breakdown-val" id="r-reliability">—</div>
-          <div class="breakdown-bar-wrap"><div class="breakdown-bar" id="bar-reliability" style="background: var(--prime); width:0"></div></div>
-        </div>
-        <div class="breakdown-item">
-          <div class="breakdown-label">Risk Penalty</div>
-          <div class="breakdown-val" id="r-penalty">—</div>
-          <div class="breakdown-bar-wrap"><div class="breakdown-bar" id="bar-penalty" style="background: var(--high); width:0"></div></div>
-        </div>
-      </div>
-    </div>
-
-    <div class="loan-rec">
-      <div>
-        <div class="loan-rec-label">Recommended Loan Limit</div>
-        <div class="loan-rec-amount" id="result-loan">—</div>
-        <div class="loan-rec-note" id="result-loan-note">—</div>
-      </div>
-      <div class="flex gap-8">
-        <button class="btn btn-success" onclick="saveAndDashboard()">Save Borrower →</button>
-      </div>
-    </div>
-
-    <div class="simulate-panel">
-      <div class="simulate-header">
-        <div>
-          <div class="card-title">🔬 Simulate Risk Scenario</div>
-          <div class="text-sm text-muted mt-8">Adjust revenue or trend to see score impact</div>
-        </div>
-      </div>
-      <div class="sim-inputs">
-        <div class="form-group">
-          <label>New Monthly Revenue (₹)</label>
-          <input type="number" id="sim-revenue" placeholder="Enter new revenue">
-        </div>
-        <div class="form-group">
-          <label>Revenue Trend</label>
-          <select id="sim-trend">
-            <option value="growth">Growth</option>
-            <option value="stable">Stable</option>
-            <option value="decline">Decline</option>
-          </select>
-        </div>
-        <button class="btn btn-secondary" onclick="simulateRisk()">Run Simulation</button>
-      </div>
-      <div class="sim-result" id="sim-result">
-        <div class="sim-result-row">
-          <div>
-            <div class="text-sm text-muted">Simulated Score</div>
-            <div class="sim-score" id="sim-score">—</div>
-          </div>
-          <div>
-            <div class="text-sm text-muted">Simulated Category</div>
-            <div id="sim-cat" class="mt-8">—</div>
-          </div>
-          <div>
-            <div class="text-sm text-muted">Score Delta</div>
-            <div class="sim-score" id="sim-delta">—</div>
-          </div>
-          <div>
-            <div class="text-sm text-muted">Simulated Loan</div>
-            <div class="sim-score" id="sim-loan" style="font-size:18px;">—</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ═══════════════════════════════════════ DETAIL ═══ -->
-  <div class="view" id="view-detail">
-    <button class="back-link" onclick="showView('dashboard')">
-      ← Back to Dashboard
-    </button>
-
-    <div class="detail-hero">
-      <div>
-        <div class="detail-name" id="d-name">—</div>
-        <div class="detail-meta">
-          <div class="detail-meta-item" id="d-industry-badge"></div>
-          <div class="detail-meta-item" id="d-date-badge"></div>
-        </div>
-      </div>
-      <div class="detail-score-col">
-        <div class="detail-score" id="d-score">—</div>
-        <div id="d-cat-badge"></div>
-      </div>
-    </div>
-
-    <div class="detail-grid">
-      <div class="card">
-        <div class="card-header"><span class="card-title">Business Inputs</span></div>
-        <div class="card-body">
-          <div class="info-group" id="d-inputs"></div>
-        </div>
-      </div>
-      <div class="card">
-        <div class="card-header"><span class="card-title">Score Breakdown</span></div>
-        <div class="card-body">
-          <div class="info-group" id="d-breakdown"></div>
-          <div class="divider"></div>
-          <div>
-            <div class="text-sm text-muted" style="margin-bottom:8px;">Loan Recommendation</div>
-            <div id="d-loan" style="font-family:var(--display);font-size:22px;font-weight:700;color:var(--prime);">—</div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="card-header">
-        <span class="card-title">Status Management</span>
-        <div class="status-selector" id="status-selector"></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ═══════════════════════════════════════ ADMIN ═══ -->
-  <div class="view" id="view-admin">
-    <div class="page-header">
-      <div class="page-title">Admin Panel</div>
-      <div class="page-subtitle">Portfolio analytics · Risk exposure · Underwriting performance</div>
-    </div>
-
-    <div class="kpi-grid">
-      <div class="kpi-card">
-        <div class="kpi-label">Total Exposure</div>
-        <div class="kpi-value" id="a-exposure">₹0</div>
-        <div class="kpi-sub">Sum of all loan limits</div>
-      </div>
-      <div class="kpi-card">
-        <div class="kpi-label">Portfolio Avg Score</div>
-        <div class="kpi-value" id="a-avg">—</div>
-        <div class="kpi-sub">Mean risk score</div>
-      </div>
-      <div class="kpi-card">
-        <div class="kpi-label">Prime + Strong</div>
-        <div class="kpi-value" id="a-good">0</div>
-        <div class="kpi-sub">Low-risk borrowers</div>
-      </div>
-      <div class="kpi-card">
-        <div class="kpi-label">Watch + High Risk</div>
-        <div class="kpi-value" id="a-bad">0</div>
-        <div class="kpi-sub">Elevated risk borrowers</div>
-      </div>
-    </div>
-
-    <div class="analytics-grid">
-      <div class="card">
-        <div class="card-header"><span class="card-title">Risk Distribution</span></div>
-        <div class="card-body">
-          <div class="dist-bar-chart" id="dist-chart"></div>
-        </div>
-      </div>
-      <div class="card">
-        <div class="card-header"><span class="card-title">Score Distribution</span></div>
-        <div class="card-body">
-          <div class="chart-container">
-            <canvas id="score-chart" height="200"></canvas>
-          </div>
-          <div class="text-sm text-dim mt-8" style="text-align:center;">Score buckets across all borrowers</div>
-        </div>
-      </div>
-    </div>
-
-    <div class="card mt-24">
-      <div class="card-header flex-between">
-        <span class="card-title">Loan Exposure by Borrower</span>
-        <button class="btn btn-ghost btn-sm" onclick="exportData()">Export JSON</button>
-      </div>
-      <div class="card-body">
-        <div class="chart-container">
-          <canvas id="loan-chart" height="200"></canvas>
-        </div>
-      </div>
-    </div>
-
-    <div class="card mt-24">
-      <div class="card-header flex-between">
-        <span class="card-title">All Borrowers</span>
-        <button class="btn btn-danger btn-sm" onclick="clearAllData()">Clear All Data</button>
-      </div>
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>Borrower</th>
-              <th>Score</th>
-              <th>Category</th>
-              <th>Loan</th>
-              <th>Status</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody id="admin-table-body"></tbody>
-        </table>
-      </div>
-    </div>
-  </div>
-
-</main>
-
-<!-- ─── TOAST ─── -->
-<div class="toast" id="toast">
-  <span class="toast-icon" id="toast-icon">✓</span>
-  <span id="toast-msg">Saved</span>
 </div>
 
+<!-- ══════════════════════════════════════════ APP ══════ -->
+<div id="app">
+<header>
+  <div class="header-left">
+    <div class="h-logo">tutum</div>
+    <div class="h-portal-badge" id="portal-badge">SME Portal</div>
+  </div>
+  <div class="header-nav" id="header-nav"></div>
+  <div class="header-right">
+    <div class="user-pill">
+      <div class="user-avatar" id="user-avatar">J</div>
+      <span id="user-name">Joshua</span>
+    </div>
+    <button class="btn-logout" onclick="doLogout()">Sign out</button>
+  </div>
+</header>
+<main id="main-content"></main>
+</div>
+
+<div class="toast" id="toast"><span id="toast-icon">✓</span><span id="toast-msg">Saved</span></div>
+
 <script>
-// ═══════════════════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════
+// AUTH
+// ══════════════════════════════════════════════════════
+const USERS = {
+  'sme@tutum.so':   { pass:'tutum2026', role:'customer', name:'Joshua Nathan' },
+  'admin@tutum.so': { pass:'admin2026', role:'admin',    name:'Admin Panel' },
+};
+let currentPortal = 'customer';
+let currentUser   = null;
+
+function selectPortal(p, el) {
+  currentPortal = p;
+  document.querySelectorAll('.portal-tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('login-title').textContent = p==='admin' ? 'Admin & Underwriting' : 'Apply for a business loan';
+  document.getElementById('login-desc').textContent  = p==='admin' ? 'Full scoring engine, borrower management, and portfolio analytics.' : 'Access working capital in 2–5 days. No branch visit required.';
+}
+
+function doLogin() {
+  const email = document.getElementById('login-email').value.trim().toLowerCase();
+  const pass  = document.getElementById('login-pass').value;
+  const err   = document.getElementById('login-error');
+  const u     = USERS[email];
+  if (!u || u.pass !== pass) { err.style.display='block'; return; }
+  if (currentPortal==='admin' && u.role!=='admin') { err.style.display='block'; err.textContent='Access denied for this portal.'; return; }
+  if (currentPortal==='customer' && u.role==='admin') { err.style.display='block'; err.textContent='Please use the Admin portal.'; return; }
+  err.style.display='none';
+  currentUser = { ...u, email };
+  document.getElementById('login-screen').style.display='none';
+  document.getElementById('app').style.display='block';
+  initApp();
+}
+
+function doLogout() {
+  currentUser=null;
+  document.getElementById('login-screen').style.display='flex';
+  document.getElementById('app').style.display='none';
+  document.getElementById('login-email').value='';
+  document.getElementById('login-pass').value='';
+}
+
+// ══════════════════════════════════════════════════════
 // DATA LAYER
-// ═══════════════════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════
+const SK = 'tutum_v3_';
+const load = k => { try{ return JSON.parse(localStorage.getItem(SK+k))||null; }catch(e){return null;} };
+const save = (k,v) => localStorage.setItem(SK+k, JSON.stringify(v));
 
-const STORAGE_KEY = 'risk_engine_v2_borrowers';
+function getBorrowers() { return load('borrowers') || []; }
+function saveBorrowers(list) { save('borrowers', list); }
 
-function loadBorrowers() {
-  try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; }
-  catch(e) { return []; }
-}
-
-function saveBorrower(b) {
-  const list = loadBorrowers();
-  list.unshift(b);
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
-}
-
-function updateBorrowerStatus(id, status) {
-  const list = loadBorrowers();
-  const b = list.find(x => x.id === id);
-  if (b) { b.status = status; localStorage.setItem(STORAGE_KEY, JSON.stringify(list)); }
-}
-
-function clearAllData() {
-  if (!confirm('Delete all borrower data? This cannot be undone.')) return;
-  localStorage.removeItem(STORAGE_KEY);
-  loadDashboard();
-  loadAdmin();
-  showToast('All data cleared', '🗑️');
-}
-
-// ═══════════════════════════════════════════════════════════════
-// SCORING ENGINE
-// ═══════════════════════════════════════════════════════════════
-
-function calculateScore(inp) {
-  // Base Score (0–50)
-  let base = 0;
-  const rev = parseFloat(inp.revenue) || 0;
-  const margin = parseFloat(inp.margin) || 0;
-  const cash = parseFloat(inp.cashBuffer) || 0;
-  const age = parseFloat(inp.age) || 0;
-
-  base += rev > 50000 ? 15 : rev > 20000 ? 10 : 5;
-  base += margin > 20 ? 10 : margin > 10 ? 5 : 0;
-  base += cash >= 3 ? 10 : 5;
-  base += age > 3 ? 10 : age > 1 ? 5 : 2;
-  base += inp.industry === 'fnb' ? 5 : 8;
-
-  // Momentum Score (-20 to +20)
-  let momentum = 0;
-  momentum += inp.trend === 'growth' ? 10 : inp.trend === 'stable' ? 5 : -10;
-  // Volatility simulated: stable=+5
-  momentum += inp.trend === 'stable' ? 5 : 0;
-  // Revenue drop
-  momentum += inp.trend === 'decline' ? -10 : 5;
-
-  // Reliability Score (0–30)
-  let reliability = 0;
-  const delay = parseFloat(inp.delay) || 0;
-  reliability += inp.defaults === 'no' ? 15 : 0;
-  reliability += delay < 2 ? 10 : delay <= 7 ? 5 : 0;
-  reliability += 5; // Engagement always +5
-
-  // Risk Penalty (-40 max)
-  let penalty = 0;
-  const debt = parseFloat(inp.debt) || 0;
-  if (debt > 20000) penalty -= 10;
-  if (inp.trend === 'decline') penalty -= 10;
-  if (penalty === 0) penalty += 5; // bonus if no risk
-
-  // Final Score
-  const total = (base * 0.4) + (momentum * 0.3) + (reliability * 0.3) + penalty;
-  return { base, momentum, reliability, penalty, total: Math.round(Math.max(0, Math.min(100, total))) };
-}
-
-function classifyRisk(score) {
-  if (score >= 85) return { cat: 'PRIME',  cls: 'prime',  label: 'Prime',  color: 'var(--prime)',  pct: 0.30, desc: 'Exceptional credit profile — low risk, high confidence.' };
-  if (score >= 70) return { cat: 'STRONG', cls: 'strong', label: 'Strong', color: 'var(--strong)', pct: 0.20, desc: 'Strong fundamentals with manageable risk factors.' };
-  if (score >= 55) return { cat: 'WATCH',  cls: 'watch',  label: 'Watch',  color: 'var(--watch)',  pct: 0.10, desc: 'Monitor closely — some elevated risk indicators.' };
-  return               { cat: 'HIGH',   cls: 'high',   label: 'High Risk', color: 'var(--high)', pct: 0.05, desc: 'Significant risk — conservative lending recommended.' };
-}
-
-function getLoanAmount(rev, pct) {
-  return Math.round((parseFloat(rev) || 0) * pct);
-}
-
-function formatCurrency(n) {
-  if (n >= 100000) return '₹' + (n/100000).toFixed(2) + 'L';
-  if (n >= 1000) return '₹' + (n/1000).toFixed(1) + 'K';
-  return '₹' + n.toLocaleString('en-IN');
-}
-
-// ═══════════════════════════════════════════════════════════════
-// CURRENT ASSESSMENT STATE
-// ═══════════════════════════════════════════════════════════════
-
-let currentResult = null;
-let currentInputs = null;
-
-function getFormInputs() {
-  return {
-    name: document.getElementById('f-name').value.trim(),
-    industry: document.getElementById('f-industry').value,
-    age: document.getElementById('f-age').value,
-    revenue: document.getElementById('f-revenue').value,
-    margin: document.getElementById('f-margin').value,
-    cashBuffer: document.getElementById('f-cashbuffer').value,
-    debt: document.getElementById('f-debt').value,
-    defaults: document.getElementById('f-defaults').value,
-    delay: document.getElementById('f-delay').value,
-    trend: document.getElementById('f-trend').value,
+function getEngineConfig() {
+  return load('engine') || {
+    hardGates: [
+      { id:'dscr', label:'DSCR minimum', value:1.2, type:'min', active:true, desc:'Debt Service Coverage Ratio must exceed this threshold' },
+      { id:'age',  label:'Min business age (months)', value:6, type:'min', active:true, desc:'Business must be registered for at least this many months' },
+      { id:'bankrupt', label:'No active bankruptcy', value:0, type:'flag', active:true, desc:'Director must have no active bankruptcy proceedings' },
+    ],
+    modules: [
+      {
+        id:'cashflow', label:'Cash Flow Analysis', weight:30, active:true, color:'#0A7C4E',
+        metrics:[
+          {id:'avg_inflow',   label:'Average monthly inflow',      pts:15, active:true, desc:'Based on 6-month bank statement average'},
+          {id:'consistency',  label:'Inflow consistency score',    pts:10, active:true, desc:'Low variance = higher score (σ/μ ratio)'},
+          {id:'io_ratio',     label:'Inflow-to-outflow ratio',     pts:10, active:true, desc:'>1.3 = good; >1.5 = excellent'},
+          {id:'peak_trough',  label:'Peak-to-trough stability',    pts:5,  active:true, desc:'Measures seasonal revenue swings'},
+        ]
+      },
+      {
+        id:'dscr_mod', label:'DSCR & Repayment Capacity', weight:25, active:true, color:'#1A56A0',
+        metrics:[
+          {id:'dscr_score',   label:'DSCR ratio score',           pts:20, active:true, desc:'Net inflow ÷ projected monthly repayment'},
+          {id:'debt_burden',  label:'Existing debt burden',        pts:10, active:true, desc:'Total debt vs monthly inflow'},
+          {id:'loan_size',    label:'Loan-to-inflow ratio',        pts:5,  active:true, desc:'Requested loan vs 6-month avg inflow'},
+        ]
+      },
+      {
+        id:'fundamentals', label:'Business Fundamentals', weight:20, active:true, color:'#7B3F00',
+        metrics:[
+          {id:'revenue',      label:'Monthly revenue',             pts:10, active:true, desc:'>SGD 50K=full pts; >20K=partial'},
+          {id:'margin',       label:'Profit margin %',             pts:8,  active:true, desc:'>20%=full; >10%=partial'},
+          {id:'biz_age',      label:'Business age (years)',        pts:7,  active:true, desc:'>3yr=full; >1yr=partial; <1yr=min'},
+          {id:'industry',     label:'Industry risk factor',        pts:5,  active:true, desc:'F&B=higher risk; Tech/Services=lower'},
+          {id:'acra',         label:'ACRA registration verified',  pts:5,  active:true, desc:'Confirmed with ACRA BizFile+'},
+          {id:'gst',          label:'GST registered',              pts:5,  active:true, desc:'GST filing = legitimate business signal'},
+        ]
+      },
+      {
+        id:'behavioural', label:'Behavioural Reliability', weight:15, active:true, color:'#6B1FBD',
+        metrics:[
+          {id:'defaults',     label:'No past defaults',            pts:15, active:true, desc:'Director & business credit history'},
+          {id:'pay_delay',    label:'Payment delay record',        pts:8,  active:true, desc:'<2 days avg delay = full pts'},
+          {id:'bank_bounces', label:'No bounced cheques/GIRO',    pts:7,  active:true, desc:'Bank statement analysis'},
+        ]
+      },
+      {
+        id:'risk_conc', label:'Risk & Concentration', weight:10, active:true, color:'#B7670A',
+        metrics:[
+          {id:'client_conc',  label:'Client concentration risk',   pts:8,  active:true, desc:'Top client <50% revenue = lower risk'},
+          {id:'debt_level',   label:'Total existing debt level',   pts:7,  active:true, desc:'<6 months revenue = acceptable'},
+          {id:'trend',        label:'Revenue trend direction',     pts:5,  active:true, desc:'Growth/Stable/Decline trajectory'},
+        ]
+      },
+    ]
   };
 }
+function saveEngine(cfg) { save('engine', cfg); }
 
-function previewScore() {
-  const inp = getFormInputs();
-  if (!inp.revenue) { showToast('Enter revenue to preview', '⚠️'); return; }
-  const scores = calculateScore(inp);
-  const risk = classifyRisk(scores.total);
-  const el = document.getElementById('score-preview');
-  el.innerHTML = `
-    <div style="font-family:var(--display);font-size:40px;font-weight:700;color:${risk.color};line-height:1">${scores.total}</div>
-    <div style="margin-top:8px;"><span class="badge badge-${risk.cls}"><span class="badge-dot"></span>${risk.label}</span></div>
-    <div style="font-size:12px;color:var(--text3);margin-top:8px;">Loan: ${formatCurrency(getLoanAmount(inp.revenue, risk.pct))}</div>
+// ══════════════════════════════════════════════════════
+// SCORING ENGINE
+// ══════════════════════════════════════════════════════
+function runScore(inp, cfg) {
+  const rev   = parseFloat(inp.revenue)||0;
+  const margin= parseFloat(inp.margin)||0;
+  const age   = parseFloat(inp.bizAge)||0;
+  const cash  = parseFloat(inp.cashBuffer)||0;
+  const debt  = parseFloat(inp.existingDebt)||0;
+  const delay = parseFloat(inp.payDelay)||0;
+  const avgIn = parseFloat(inp.avgMonthlyInflow)||rev;
+  const avgOut= parseFloat(inp.avgMonthlyOutflow)||(rev*0.7);
+  const inConsistency = parseFloat(inp.inflowConsistency)||70;
+  const clientConc = parseFloat(inp.clientConcentration)||40;
+  const loanReq = parseFloat(inp.loanRequested)||0;
+
+  // DSCR calculation
+  const netMonthly = avgIn - avgOut;
+  const monthlyRepayment = loanReq > 0 ? (loanReq * 1.28) / 12 : (rev * 0.2 * 1.28) / 12;
+  const dscr = monthlyRepayment > 0 ? netMonthly / monthlyRepayment : 0;
+
+  // Hard gates
+  const gates = [];
+  const g = cfg.hardGates || [];
+  const dscrGate = g.find(x=>x.id==='dscr');
+  const ageGate  = g.find(x=>x.id==='age');
+  const bankGate = g.find(x=>x.id==='bankrupt');
+  if (dscrGate?.active) gates.push({ label:'DSCR ≥ '+dscrGate.value, pass: dscr >= dscrGate.value, val: dscr.toFixed(2) });
+  if (ageGate?.active)  gates.push({ label:'Business age ≥ '+ageGate.value+' months', pass: age*12 >= ageGate.value, val: (age*12).toFixed(0)+' months' });
+  if (bankGate?.active) gates.push({ label:'No active bankruptcy', pass: inp.bankruptcy!=='yes', val: inp.bankruptcy==='yes'?'Failed':'Clear' });
+  const hardFail = gates.some(g=>!g.pass);
+
+  // Module scores
+  const moduleScores = {};
+  const calcDetails  = {};
+  let totalRaw = 0;
+  let totalWeight = 0;
+
+  cfg.modules.filter(m=>m.active).forEach(mod => {
+    let pts = 0; let maxPts = 0; const lines = [];
+
+    mod.metrics.filter(m=>m.active).forEach(metric => {
+      maxPts += metric.pts;
+      let earned = 0;
+      switch(metric.id) {
+        case 'avg_inflow':    earned = avgIn>50000?metric.pts:avgIn>20000?metric.pts*0.67:metric.pts*0.33; break;
+        case 'consistency':   earned = inConsistency>80?metric.pts:inConsistency>60?metric.pts*0.7:metric.pts*0.3; break;
+        case 'io_ratio':      const ratio=avgIn/Math.max(avgOut,1); earned=ratio>1.5?metric.pts:ratio>1.3?metric.pts*0.7:ratio>1.1?metric.pts*0.4:0; break;
+        case 'peak_trough':   earned = inConsistency>75?metric.pts:inConsistency>50?metric.pts*0.6:metric.pts*0.2; break;
+        case 'dscr_score':    earned = dscr>2?metric.pts:dscr>1.5?metric.pts*0.8:dscr>1.2?metric.pts*0.6:dscr>1.0?metric.pts*0.3:0; break;
+        case 'debt_burden':   const dbRatio=debt/Math.max(avgIn,1); earned=dbRatio<3?metric.pts:dbRatio<6?metric.pts*0.6:dbRatio<9?metric.pts*0.3:0; break;
+        case 'loan_size':     const lsRatio=loanReq/Math.max(avgIn,1); earned=lsRatio<3?metric.pts:lsRatio<6?metric.pts*0.6:metric.pts*0.2; break;
+        case 'revenue':       earned = rev>50000?metric.pts:rev>20000?metric.pts*0.67:rev>10000?metric.pts*0.33:0; break;
+        case 'margin':        earned = margin>20?metric.pts:margin>10?metric.pts*0.6:margin>5?metric.pts*0.3:0; break;
+        case 'biz_age':       earned = age>3?metric.pts:age>1?metric.pts*0.6:age>0.5?metric.pts*0.3:0; break;
+        case 'industry':      earned = ['tech','services','healthcare'].includes(inp.industry)?metric.pts:inp.industry==='fnb'?metric.pts*0.4:metric.pts*0.7; break;
+        case 'acra':          earned = inp.acraVerified==='yes'?metric.pts:0; break;
+        case 'gst':           earned = inp.gstRegistered==='yes'?metric.pts:0; break;
+        case 'defaults':      earned = inp.pastDefaults==='no'?metric.pts:0; break;
+        case 'pay_delay':     earned = delay<2?metric.pts:delay<=7?metric.pts*0.6:delay<=14?metric.pts*0.2:0; break;
+        case 'bank_bounces':  earned = inp.bouncedCheques==='no'?metric.pts:0; break;
+        case 'client_conc':   earned = clientConc<30?metric.pts:clientConc<50?metric.pts*0.7:clientConc<70?metric.pts*0.4:0; break;
+        case 'debt_level':    earned = debt<avgIn*3?metric.pts:debt<avgIn*6?metric.pts*0.6:debt<avgIn*9?metric.pts*0.3:0; break;
+        case 'trend':         earned = inp.trend==='growth'?metric.pts:inp.trend==='stable'?metric.pts*0.6:0; break;
+        default:              earned = metric.pts * 0.5;
+      }
+      earned = Math.round(earned*10)/10;
+      pts += earned;
+      lines.push({ label:metric.label, earned, max:metric.pts });
+    });
+
+    const pct = maxPts > 0 ? pts/maxPts : 0;
+    moduleScores[mod.id] = { raw:pts, max:maxPts, pct, weight:mod.weight, weighted:pct*(mod.weight/100)*100 };
+    calcDetails[mod.id]  = lines;
+    totalRaw    += pct*(mod.weight/100)*100;
+    totalWeight += mod.weight;
+  });
+
+  const finalScore = Math.round(Math.min(100, Math.max(0, totalRaw)));
+  const risk = classifyRisk(finalScore);
+  const loanPct = hardFail ? 0 : risk.pct;
+  const loanAmt = Math.round(avgIn * loanPct);
+
+  return { finalScore, risk, dscr, netMonthly, monthlyRepayment, gates, hardFail, moduleScores, calcDetails, loanAmt, loanPct };
+}
+
+function classifyRisk(s) {
+  if (s>=85) return {cat:'PRIME',  cls:'prime',  color:'#0A7C4E', pct:0.30, desc:'Exceptional credit profile — lowest risk tier.'};
+  if (s>=70) return {cat:'STRONG', cls:'strong', color:'#1A56A0', pct:0.20, desc:'Strong fundamentals with manageable risk factors.'};
+  if (s>=55) return {cat:'WATCH',  cls:'watch',  color:'#B7670A', pct:0.10, desc:'Monitor closely — some elevated risk indicators.'};
+  return            {cat:'HIGH',   cls:'high',   color:'#C0392B', pct:0.05, desc:'Significant risk — conservative lending recommended.'};
+}
+
+function fmtSGD(n) {
+  if (!n) return 'SGD 0';
+  if (n>=1000000) return 'SGD '+(n/1000000).toFixed(2)+'M';
+  if (n>=1000)    return 'SGD '+(n/1000).toFixed(1)+'K';
+  return 'SGD '+n.toLocaleString('en-SG');
+}
+
+function fmtDate(ts) {
+  if (!ts) return '—';
+  return new Date(ts).toLocaleDateString('en-SG',{day:'2-digit',month:'short',year:'numeric'});
+}
+
+function esc(s){ return String(s||'').replace(/[<>"']/g,c=>({'<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c])); }
+
+// ══════════════════════════════════════════════════════
+// APP INIT
+// ══════════════════════════════════════════════════════
+function initApp() {
+  const u = currentUser;
+  document.getElementById('portal-badge').textContent = u.role==='admin' ? 'Admin' : 'SME Portal';
+  document.getElementById('user-name').textContent    = u.name.split(' ')[0];
+  document.getElementById('user-avatar').textContent  = u.name[0].toUpperCase();
+
+  if (u.role==='admin') {
+    document.getElementById('header-nav').innerHTML = `
+      <button class="nav-btn active" onclick="showAdminView('dashboard',this)">Dashboard</button>
+      <button class="nav-btn" onclick="showAdminView('applications',this)">Applications</button>
+      <button class="nav-btn" onclick="showAdminView('engine',this)">Scoring Engine</button>
+      <button class="nav-btn" onclick="showAdminView('analytics',this)">Analytics</button>`;
+    renderAdminDashboard();
+  } else {
+    document.getElementById('header-nav').innerHTML = `
+      <button class="nav-btn active" onclick="showCustomerView('apply',this)">Apply Now</button>
+      <button class="nav-btn" onclick="showCustomerView('status',this)">My Applications</button>`;
+    renderCustomerApply();
+  }
+}
+
+// ══════════════════════════════════════════════════════
+// NAVIGATION
+// ══════════════════════════════════════════════════════
+function showAdminView(name, el) {
+  if (el) { document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active')); el.classList.add('active'); }
+  const fns = { dashboard:renderAdminDashboard, applications:renderApplications, engine:renderScoringEngine, analytics:renderAnalytics };
+  if (fns[name]) fns[name]();
+}
+function showCustomerView(name, el) {
+  if (el) { document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active')); el.classList.add('active'); }
+  if (name==='apply') renderCustomerApply();
+  if (name==='status') renderCustomerStatus();
+}
+
+// ══════════════════════════════════════════════════════
+// CUSTOMER PORTAL — APPLICATION FORM
+// ══════════════════════════════════════════════════════
+function renderCustomerApply() {
+  document.getElementById('main-content').innerHTML = `
+    <div class="page-hd flex-between">
+      <div><div class="page-title">SME Loan Application</div><div class="page-sub">Complete all sections · Typical decision in 2–5 business days</div></div>
+    </div>
+    <div class="grid-2" style="align-items:start;">
+      <div>
+        <!-- Business Info -->
+        <div class="card mb-20">
+          <div class="card-hd"><span class="card-title">Business Information</span><span class="tag">Step 1 of 4</span></div>
+          <div class="card-body">
+            <div class="form-section-title">Company Details</div>
+            <div class="form-group"><label>Registered Business Name *</label><input id="f-bizname" placeholder="As per ACRA registration"></div>
+            <div class="form-row">
+              <div class="form-group"><label>UEN / Registration No. *</label><input id="f-uen" placeholder="202312345A"></div>
+              <div class="form-group"><label>GST Registration No.</label><input id="f-gst" placeholder="M90123456A (if applicable)"></div>
+            </div>
+            <div class="form-group"><label>Registered Business Address *</label><input id="f-address" placeholder="123 Orchard Road, #04-01, Singapore 238859"></div>
+            <div class="form-row">
+              <div class="form-group"><label>Industry</label>
+                <select id="f-industry">
+                  <option value="tech">Technology / SaaS</option>
+                  <option value="services">Professional Services</option>
+                  <option value="retail">Retail</option>
+                  <option value="fnb">Food & Beverage</option>
+                  <option value="manufacturing">Manufacturing</option>
+                  <option value="healthcare">Healthcare</option>
+                  <option value="logistics">Logistics</option>
+                  <option value="ecommerce">E-Commerce</option>
+                  <option value="construction">Construction</option>
+                </select>
+              </div>
+              <div class="form-group"><label>Business Age (years) *</label><input id="f-bizAge" type="number" min="0" step="0.5" placeholder="3.5"></div>
+            </div>
+            <div class="form-section-title mt-20">Director / Guarantor</div>
+            <div class="form-row">
+              <div class="form-group"><label>Director Full Name *</label><input id="f-dirName" placeholder="Full legal name"></div>
+              <div class="form-group"><label>NRIC / Passport No. *</label><input id="f-dirNric" placeholder="S1234567A"></div>
+            </div>
+            <div class="form-row">
+              <div class="form-group"><label>Director Contact No.</label><input id="f-dirPhone" placeholder="+65 9xxx xxxx"></div>
+              <div class="form-group"><label>Director Email *</label><input id="f-dirEmail" placeholder="director@company.com"></div>
+            </div>
+            <div class="form-group"><label>ACRA Verified</label>
+              <div class="toggle-group">
+                <button class="toggle-opt sel" onclick="tog('acraVerified','yes',this)">Yes — verified</button>
+                <button class="toggle-opt" onclick="tog('acraVerified','no',this)">No / Pending</button>
+              </div><input type="hidden" id="f-acraVerified" value="yes">
+            </div>
+            <div class="form-group"><label>GST Registered</label>
+              <div class="toggle-group">
+                <button class="toggle-opt sel" onclick="tog('gstRegistered','yes',this)">Yes</button>
+                <button class="toggle-opt" onclick="tog('gstRegistered','no',this)">No</button>
+              </div><input type="hidden" id="f-gstRegistered" value="yes">
+            </div>
+          </div>
+        </div>
+
+        <!-- Financial Info -->
+        <div class="card mb-20">
+          <div class="card-hd"><span class="card-title">Financial Information</span><span class="tag">Step 2 of 4</span></div>
+          <div class="card-body">
+            <div class="form-section-title">Revenue & Profitability</div>
+            <div class="form-row">
+              <div class="form-group"><label>Monthly Revenue (SGD) *</label><input id="f-revenue" type="number" placeholder="50000"></div>
+              <div class="form-group"><label>Profit Margin (%)</label><input id="f-margin" type="number" placeholder="18"></div>
+            </div>
+            <div class="form-row">
+              <div class="form-group"><label>Cash Buffer (months)</label><input id="f-cashBuffer" type="number" step="0.5" placeholder="3"></div>
+              <div class="form-group"><label>Existing Debt (SGD)</label><input id="f-existingDebt" type="number" placeholder="15000"></div>
+            </div>
+            <div class="form-section-title mt-20">Cash Flow (from Bank Statement)</div>
+            <div class="form-row">
+              <div class="form-group"><label>Avg Monthly Inflow (SGD) *</label><input id="f-avgMonthlyInflow" type="number" placeholder="55000"></div>
+              <div class="form-group"><label>Avg Monthly Outflow (SGD) *</label><input id="f-avgMonthlyOutflow" type="number" placeholder="38000"></div>
+            </div>
+            <div class="form-row">
+              <div class="form-group"><label>Inflow Consistency Score (0–100)</label><input id="f-inflowConsistency" type="number" min="0" max="100" placeholder="75" title="How consistent is monthly inflow? 100=perfectly stable"></div>
+              <div class="form-group"><label>Largest Client % of Revenue</label><input id="f-clientConcentration" type="number" min="0" max="100" placeholder="35"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <!-- Behavioural -->
+        <div class="card mb-20">
+          <div class="card-hd"><span class="card-title">Credit & Behavioural History</span><span class="tag">Step 3 of 4</span></div>
+          <div class="card-body">
+            <div class="form-section-title">Credit History</div>
+            <div class="form-group"><label>Past Loan Defaults</label>
+              <div class="toggle-group">
+                <button class="toggle-opt sel" onclick="tog('pastDefaults','no',this)">No defaults</button>
+                <button class="toggle-opt" onclick="tog('pastDefaults','yes',this)">Has defaulted</button>
+              </div><input type="hidden" id="f-pastDefaults" value="no">
+            </div>
+            <div class="form-group mt-16"><label>Average Payment Delay (days)</label><input id="f-payDelay" type="number" min="0" placeholder="2"></div>
+            <div class="form-group"><label>Bounced Cheques / Failed GIRO</label>
+              <div class="toggle-group">
+                <button class="toggle-opt sel" onclick="tog('bouncedCheques','no',this)">None</button>
+                <button class="toggle-opt" onclick="tog('bouncedCheques','yes',this)">Yes (any)</button>
+              </div><input type="hidden" id="f-bouncedCheques" value="no">
+            </div>
+            <div class="form-group"><label>Active Bankruptcy Proceedings</label>
+              <div class="toggle-group">
+                <button class="toggle-opt sel" onclick="tog('bankruptcy','no',this)">No</button>
+                <button class="toggle-opt" onclick="tog('bankruptcy','yes',this)">Yes</button>
+              </div><input type="hidden" id="f-bankruptcy" value="no">
+            </div>
+            <div class="form-section-title mt-20">Business Outlook</div>
+            <div class="form-group"><label>Revenue Trend</label>
+              <div class="toggle-group">
+                <button class="toggle-opt sel" onclick="tog('trend','growth',this)">📈 Growth</button>
+                <button class="toggle-opt" onclick="tog('trend','stable',this)">➡️ Stable</button>
+                <button class="toggle-opt" onclick="tog('trend','decline',this)">📉 Decline</button>
+              </div><input type="hidden" id="f-trend" value="growth">
+            </div>
+          </div>
+        </div>
+
+        <!-- Bank Statement Upload -->
+        <div class="card mb-20">
+          <div class="card-hd"><span class="card-title">Bank Statement Upload</span><span class="tag">Step 4 of 4</span></div>
+          <div class="card-body">
+            <div class="upload-zone" id="upload-zone" onclick="document.getElementById('bs-file').click()" ondragover="event.preventDefault();this.classList.add('dragging')" ondragleave="this.classList.remove('dragging')" ondrop="handleDrop(event)">
+              <div class="upload-icon">📄</div>
+              <div class="upload-title">Upload Bank Statement (6 months)</div>
+              <div class="upload-sub">PDF, JPG, PNG — up to 10MB · DBS, OCBC, UOB, Maybank supported</div>
+              <input type="file" id="bs-file" style="display:none" accept=".pdf,.jpg,.jpeg,.png" onchange="handleFileUpload(this)">
+            </div>
+            <div id="parsed-preview" style="display:none"></div>
+            <div class="form-group mt-16"><label>Loan Amount Requested (SGD) *</label><input id="f-loanRequested" type="number" placeholder="30000"></div>
+            <div class="form-group"><label>Loan Purpose</label>
+              <select id="f-loanPurpose">
+                <option value="working_capital">Working Capital</option>
+                <option value="inventory">Inventory Purchase</option>
+                <option value="equipment">Equipment / Machinery</option>
+                <option value="expansion">Business Expansion</option>
+                <option value="payroll">Payroll Support</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+            <div class="form-actions">
+              <button class="btn btn-secondary" onclick="previewAppScore()">Preview Score</button>
+              <button class="btn btn-primary" onclick="submitApplication()">Submit Application →</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="app-result-section"></div>
   `;
 }
 
-function submitAssessment() {
-  const inp = getFormInputs();
-  if (!inp.name) { showToast('Please enter a business name', '⚠️'); return; }
-  if (!inp.revenue) { showToast('Please enter monthly revenue', '⚠️'); return; }
-
-  const scores = calculateScore(inp);
-  const risk = classifyRisk(scores.total);
-  const loan = getLoanAmount(inp.revenue, risk.pct);
-  currentResult = { scores, risk, loan, inp };
-  currentInputs = inp;
-
-  // Build result view
-  const scoreEl = document.getElementById('result-score');
-  scoreEl.textContent = scores.total;
-  scoreEl.style.color = risk.color;
-  document.getElementById('result-cat').textContent = risk.cat;
-  document.getElementById('result-cat').style.color = risk.color;
-  document.getElementById('result-desc').textContent = risk.desc;
-  document.getElementById('score-hero').style.boxShadow = `inset 0 0 80px ${risk.color}11`;
-
-  // Breakdown
-  document.getElementById('r-base').textContent = scores.base.toFixed(1);
-  document.getElementById('r-momentum').textContent = (scores.momentum >= 0 ? '+' : '') + scores.momentum.toFixed(1);
-  document.getElementById('r-reliability').textContent = scores.reliability.toFixed(1);
-  document.getElementById('r-penalty').textContent = (scores.penalty >= 0 ? '+' : '') + scores.penalty.toFixed(1);
-
-  setTimeout(() => {
-    document.getElementById('bar-base').style.width = (scores.base / 50 * 100) + '%';
-    document.getElementById('bar-momentum').style.width = (Math.max(0, scores.momentum) / 20 * 100) + '%';
-    document.getElementById('bar-reliability').style.width = (scores.reliability / 30 * 100) + '%';
-    document.getElementById('bar-penalty').style.width = (Math.abs(Math.min(0, scores.penalty)) / 40 * 100) + '%';
-  }, 100);
-
-  // Loan
-  document.getElementById('result-loan').textContent = formatCurrency(loan);
-  document.getElementById('result-loan').style.color = risk.color;
-  document.getElementById('result-loan-note').textContent = `${(risk.pct*100).toFixed(0)}% of monthly revenue · ${risk.cat} tier`;
-
-  // Preset sim inputs
-  document.getElementById('sim-revenue').value = inp.revenue;
-  document.getElementById('sim-trend').value = inp.trend;
-
-  showView('result');
+function tog(field, value, el) {
+  const parent = el.parentElement;
+  parent.querySelectorAll('.toggle-opt').forEach(b=>b.classList.remove('sel'));
+  el.classList.add('sel');
+  document.getElementById('f-'+field).value = value;
 }
 
-function saveAndDashboard() {
-  if (!currentResult) return;
-  const { scores, risk, loan, inp } = currentResult;
-  const borrower = {
-    id: Date.now().toString(),
-    name: inp.name,
-    industry: inp.industry,
-    score: scores.total,
-    category: risk.cat,
-    categoryClass: risk.cls,
-    loan,
-    status: 'Active',
-    inputs: inp,
-    breakdown: { base: scores.base, momentum: scores.momentum, reliability: scores.reliability, penalty: scores.penalty },
-    timestamp: new Date().toISOString()
+function getFormInputs() {
+  const gv = id => document.getElementById(id)?.value || '';
+  return {
+    bizName:gv('f-bizname'), uen:gv('f-uen'), gstNo:gv('f-gst'), address:gv('f-address'),
+    industry:gv('f-industry'), bizAge:gv('f-bizAge'),
+    dirName:gv('f-dirName'), dirNric:gv('f-dirNric'), dirPhone:gv('f-dirPhone'), dirEmail:gv('f-dirEmail'),
+    acraVerified:gv('f-acraVerified'), gstRegistered:gv('f-gstRegistered'),
+    revenue:gv('f-revenue'), margin:gv('f-margin'), cashBuffer:gv('f-cashBuffer'), existingDebt:gv('f-existingDebt'),
+    avgMonthlyInflow:gv('f-avgMonthlyInflow'), avgMonthlyOutflow:gv('f-avgMonthlyOutflow'),
+    inflowConsistency:gv('f-inflowConsistency'), clientConcentration:gv('f-clientConcentration'),
+    pastDefaults:gv('f-pastDefaults'), payDelay:gv('f-payDelay'), bouncedCheques:gv('f-bouncedCheques'),
+    bankruptcy:gv('f-bankruptcy'), trend:gv('f-trend'),
+    loanRequested:gv('f-loanRequested'), loanPurpose:gv('f-loanPurpose'),
   };
-  saveBorrower(borrower);
-  currentResult = null;
-  showToast(`${inp.name} saved to portfolio`, '✅');
-  showView('dashboard');
 }
 
-function simulateRisk() {
-  if (!currentInputs) return;
-  const simRev = document.getElementById('sim-revenue').value || currentInputs.revenue;
-  const simTrend = document.getElementById('sim-trend').value;
-  const simInp = { ...currentInputs, revenue: simRev, trend: simTrend };
-  const simScores = calculateScore(simInp);
-  const simRisk = classifyRisk(simScores.total);
-  const simLoan = getLoanAmount(simRev, simRisk.pct);
-
-  const orig = currentResult ? currentResult.scores.total : 0;
-  const delta = simScores.total - orig;
-
-  document.getElementById('sim-score').textContent = simScores.total;
-  document.getElementById('sim-score').style.color = simRisk.color;
-  document.getElementById('sim-cat').innerHTML = `<span class="badge badge-${simRisk.cls}"><span class="badge-dot"></span>${simRisk.label}</span>`;
-  document.getElementById('sim-delta').textContent = (delta >= 0 ? '+' : '') + delta;
-  document.getElementById('sim-delta').style.color = delta >= 0 ? 'var(--prime)' : 'var(--high)';
-  document.getElementById('sim-loan').textContent = formatCurrency(simLoan);
-
-  const el = document.getElementById('sim-result');
-  el.classList.add('show');
+function previewAppScore() {
+  const inp = getFormInputs();
+  if (!inp.avgMonthlyInflow || !inp.avgMonthlyOutflow) { showToast('Please enter cash flow figures first','⚠️'); return; }
+  const cfg = getEngineConfig();
+  const result = runScore(inp, cfg);
+  const sec = document.getElementById('app-result-section');
+  sec.innerHTML = renderScoreResult(result, inp, false);
+  setTimeout(()=>animateBars(result), 100);
+  sec.scrollIntoView({behavior:'smooth', block:'start'});
 }
 
-// ═══════════════════════════════════════════════════════════════
-// DASHBOARD
-// ═══════════════════════════════════════════════════════════════
+function submitApplication() {
+  const inp = getFormInputs();
+  if (!inp.bizName) { showToast('Please enter your business name','⚠️'); return; }
+  if (!inp.avgMonthlyInflow) { showToast('Please enter cash flow information','⚠️'); return; }
+  if (!inp.loanRequested) { showToast('Please enter loan amount requested','⚠️'); return; }
 
-function loadDashboard() {
-  const borrowers = loadBorrowers();
-  const tbody = document.getElementById('table-body');
-  const empty = document.getElementById('empty-state');
-
-  if (borrowers.length === 0) {
-    tbody.innerHTML = '';
-    empty.style.display = 'block';
-    document.getElementById('kpi-total').textContent = '0';
-    document.getElementById('kpi-avg').textContent = '—';
-    document.getElementById('kpi-active').textContent = '0';
-    document.getElementById('kpi-default').textContent = '—';
-    return;
-  }
-
-  empty.style.display = 'none';
-
-  // KPIs
-  document.getElementById('kpi-total').textContent = borrowers.length;
-  const avg = Math.round(borrowers.reduce((s, b) => s + b.score, 0) / borrowers.length);
-  document.getElementById('kpi-avg').textContent = avg;
-  const active = borrowers.filter(b => b.status === 'Active').length;
-  document.getElementById('kpi-active').textContent = active;
-  const atRisk = borrowers.filter(b => b.status === 'At Risk').length;
-  document.getElementById('kpi-default').textContent = borrowers.length ? ((atRisk/borrowers.length*100).toFixed(1) + '%') : '—';
-
-  renderTable(borrowers);
+  const cfg = getEngineConfig();
+  const result = runScore(inp, cfg);
+  const borrowers = getBorrowers();
+  const b = {
+    id: Date.now().toString(),
+    ...inp,
+    score: result.finalScore,
+    category: result.risk.cat,
+    categoryClass: result.risk.cls,
+    loanAmt: result.loanAmt,
+    dscr: result.dscr,
+    hardFail: result.hardFail,
+    moduleScores: result.moduleScores,
+    calcDetails: result.calcDetails,
+    gates: result.gates,
+    status: 'Pending Review',
+    timestamp: new Date().toISOString(),
+    user: currentUser.email,
+  };
+  borrowers.unshift(b);
+  saveBorrowers(borrowers);
+  showToast('Application submitted! We will review within 2 business days','✅');
+  renderCustomerStatus();
+  document.querySelectorAll('.nav-btn').forEach((b,i)=>{if(i===1)b.classList.add('active'); else b.classList.remove('active');});
 }
 
-function renderTable(borrowers) {
-  const tbody = document.getElementById('table-body');
-  tbody.innerHTML = borrowers.map(b => `
-    <tr onclick="openDetail('${b.id}')">
-      <td class="td-name">${esc(b.name)}</td>
-      <td><span class="tag">${industryLabel(b.industry || b.inputs?.industry)}</span></td>
-      <td><span class="score-num" style="color:${catColor(b.categoryClass)}">${b.score}</span></td>
-      <td><span class="badge badge-${b.categoryClass}"><span class="badge-dot"></span>${b.category}</span></td>
-      <td style="font-family:var(--mono);color:var(--text)">${formatCurrency(b.loan)}</td>
-      <td><span class="badge ${statusClass(b.status)}">${b.status || 'Active'}</span></td>
-      <td class="text-dim">${formatDate(b.timestamp)}</td>
-    </tr>
-  `).join('');
+function renderCustomerStatus() {
+  const borrowers = getBorrowers().filter(b=>b.user===currentUser.email);
+  document.getElementById('main-content').innerHTML = `
+    <div class="page-hd"><div class="page-title">My Applications</div><div class="page-sub">Track your loan application status</div></div>
+    ${borrowers.length===0 ? `
+      <div class="card"><div class="card-body">
+        <div class="empty"><h3>No applications yet</h3><p>Submit your first loan application to get started.</p>
+        <button class="btn btn-primary" onclick="renderCustomerApply();document.querySelectorAll('.nav-btn').forEach((b,i)=>{if(i===0)b.classList.add('active');else b.classList.remove('active');})">Apply Now →</button></div>
+      </div></div>` :
+    borrowers.map(b=>`
+      <div class="card mb-20">
+        <div class="card-hd">
+          <div><div class="card-title">${esc(b.bizName)} — ${esc(b.uen||'')}</div><div class="text-sm text-muted mt-8">${fmtDate(b.timestamp)} · ${esc(b.loanPurpose||'Working Capital')}</div></div>
+          <span class="badge badge-${b.categoryClass||'pending'}">${b.category||'Pending'}</span>
+        </div>
+        <div class="card-body">
+          <div class="grid-3">
+            <div>
+              <div class="text-sm text-muted">Tutum Score</div>
+              <div style="font-family:var(--serif);font-size:32px;color:${b.hardFail?'var(--red)':classifyRisk(b.score).color}">${b.score}</div>
+              ${b.hardFail?'<div class="text-sm" style="color:var(--red)">Hard gate triggered</div>':''}
+            </div>
+            <div>
+              <div class="text-sm text-muted">Recommended Loan</div>
+              <div style="font-family:var(--serif);font-size:22px;color:var(--prime)">${fmtSGD(b.loanAmt)}</div>
+              <div class="text-sm text-muted">DSCR: ${(b.dscr||0).toFixed(2)}</div>
+            </div>
+            <div>
+              <div class="text-sm text-muted">Status</div>
+              <div class="mt-8"><span class="badge badge-pending">${esc(b.status)}</span></div>
+            </div>
+          </div>
+          <div class="divider"></div>
+          <div class="status-timeline">
+            ${renderTimeline(b.status)}
+          </div>
+        </div>
+      </div>`).join('')}
+  `;
 }
 
-function filterTable() {
-  const q = document.getElementById('search-input').value.toLowerCase();
-  const borrowers = loadBorrowers().filter(b => b.name.toLowerCase().includes(q) || b.category.toLowerCase().includes(q));
-  renderTable(borrowers);
-}
-
-// ═══════════════════════════════════════════════════════════════
-// DETAIL VIEW
-// ═══════════════════════════════════════════════════════════════
-
-let currentDetailId = null;
-
-function openDetail(id) {
-  const b = loadBorrowers().find(x => x.id === id);
-  if (!b) return;
-  currentDetailId = id;
-
-  const risk = classifyRisk(b.score);
-
-  document.getElementById('d-name').textContent = b.name;
-  document.getElementById('d-score').textContent = b.score;
-  document.getElementById('d-score').style.color = risk.color;
-  document.getElementById('d-cat-badge').innerHTML = `<span class="badge badge-${b.categoryClass}"><span class="badge-dot"></span>${b.category}</span>`;
-  document.getElementById('d-industry-badge').innerHTML = `<span class="tag">🏢 ${industryLabel(b.industry || b.inputs?.industry)}</span>`;
-  document.getElementById('d-date-badge').innerHTML = `<span class="text-dim">📅 ${formatDate(b.timestamp)}</span>`;
-
-  // Inputs
-  const inp = b.inputs || {};
-  document.getElementById('d-inputs').innerHTML = [
-    ['Monthly Revenue', formatCurrency(inp.revenue)],
-    ['Business Age', (inp.age || '—') + ' yrs'],
-    ['Profit Margin', (inp.margin || '—') + '%'],
-    ['Cash Buffer', (inp.cashBuffer || '—') + ' months'],
-    ['Existing Debt', formatCurrency(inp.debt)],
-    ['Past Defaults', inp.defaults === 'yes' ? '⚠️ Yes' : '✅ No'],
-    ['Payment Delay', (inp.delay || '0') + ' days'],
-    ['Revenue Trend', { growth:'📈 Growth', stable:'➡️ Stable', decline:'📉 Decline' }[inp.trend] || inp.trend],
-  ].map(([l, v]) => `
-    <div class="info-row">
-      <span class="info-row-label">${l}</span>
-      <span class="info-row-val">${v}</span>
-    </div>
-  `).join('');
-
-  // Breakdown
-  const bd = b.breakdown || {};
-  document.getElementById('d-breakdown').innerHTML = [
-    ['Base Score (×0.4)', (bd.base||0).toFixed(1), 'var(--accent)'],
-    ['Momentum (×0.3)', ((bd.momentum||0)>=0?'+':'')+(bd.momentum||0).toFixed(1), 'var(--accent2)'],
-    ['Reliability (×0.3)', (bd.reliability||0).toFixed(1), 'var(--prime)'],
-    ['Risk Penalty', ((bd.penalty||0)>=0?'+':'')+(bd.penalty||0).toFixed(1), bd.penalty<0?'var(--high)':'var(--prime)'],
-    ['Final Score', b.score, risk.color],
-  ].map(([l,v,c]) => `
-    <div class="info-row">
-      <span class="info-row-label">${l}</span>
-      <span class="info-row-val" style="color:${c}">${v}</span>
-    </div>
-  `).join('');
-
-  document.getElementById('d-loan').textContent = formatCurrency(b.loan);
-
-  // Status selector
-  const statuses = ['Active', 'Completed', 'At Risk'];
-  document.getElementById('status-selector').innerHTML = statuses.map(s => `
-    <button class="btn btn-sm ${b.status===s?'btn-active':'btn-ghost'}" onclick="setStatus('${id}', '${s}', this)">${s}</button>
-  `).join('');
-
-  showView('detail');
-}
-
-function setStatus(id, status, el) {
-  updateBorrowerStatus(id, status);
-  document.querySelectorAll('#status-selector .btn').forEach(b => {
-    b.classList.remove('btn-active'); b.classList.add('btn-ghost');
-  });
-  el.classList.add('btn-active'); el.classList.remove('btn-ghost');
-  showToast(`Status updated to ${status}`, '✅');
-}
-
-// ═══════════════════════════════════════════════════════════════
-// ADMIN
-// ═══════════════════════════════════════════════════════════════
-
-function loadAdmin() {
-  const borrowers = loadBorrowers();
-
-  const totalExposure = borrowers.reduce((s, b) => s + (b.loan||0), 0);
-  const avg = borrowers.length ? Math.round(borrowers.reduce((s, b) => s + b.score, 0) / borrowers.length) : 0;
-  const primeStrong = borrowers.filter(b => b.category === 'PRIME' || b.category === 'STRONG').length;
-  const watchHigh = borrowers.filter(b => b.category === 'WATCH' || b.category === 'HIGH').length;
-
-  document.getElementById('a-exposure').textContent = formatCurrency(totalExposure);
-  document.getElementById('a-avg').textContent = avg || '—';
-  document.getElementById('a-good').textContent = primeStrong;
-  document.getElementById('a-bad').textContent = watchHigh;
-
-  // Distribution bars
-  const cats = ['PRIME', 'STRONG', 'WATCH', 'HIGH'];
-  const colors = { PRIME: 'var(--prime)', STRONG: 'var(--strong)', WATCH: 'var(--watch)', HIGH: 'var(--high)' };
-  const counts = {};
-  cats.forEach(c => counts[c] = borrowers.filter(b => b.category === c).length);
-  const maxCount = Math.max(1, ...Object.values(counts));
-
-  document.getElementById('dist-chart').innerHTML = cats.map(c => `
-    <div class="dist-row">
-      <div class="dist-label" style="color:${colors[c]}">${c}</div>
-      <div class="dist-track">
-        <div class="dist-fill" style="background:${colors[c]};width:${counts[c]/maxCount*100}%">${counts[c] > 0 ? counts[c] : ''}</div>
+function renderTimeline(status) {
+  const steps = [
+    { key:'submitted', label:'Application Submitted', sub:'Documents received and queued for review' },
+    { key:'review',    label:'Under Review', sub:'Credit team assessing your application' },
+    { key:'approved',  label:'Decision Made', sub:'Loan approved or declined with reasons' },
+    { key:'disbursed', label:'Funds Disbursed', sub:'SGD transferred to your bank account' },
+  ];
+  const statusMap = { 'Pending Review':0, 'Under Review':1, 'Approved':2, 'Declined':2, 'Disbursed':3 };
+  const cur = statusMap[status]??0;
+  return steps.map((s,i)=>`
+    <div class="timeline-item">
+      <div class="timeline-dot ${i<cur?'done':i===cur?'active':'pending'}">${i<cur?'✓':i+1}</div>
+      <div class="timeline-content">
+        <div class="timeline-title">${s.label}</div>
+        <div class="timeline-sub">${s.sub}</div>
       </div>
-      <div class="dist-count">${counts[c]}</div>
+    </div>`).join('');
+}
+
+function handleDrop(e) {
+  e.preventDefault();
+  document.getElementById('upload-zone').classList.remove('dragging');
+  const file = e.dataTransfer.files[0];
+  if (file) processFile(file);
+}
+
+function handleFileUpload(input) {
+  if (input.files[0]) processFile(input.files[0]);
+}
+
+function processFile(file) {
+  const zone = document.getElementById('upload-zone');
+  zone.innerHTML = `<div class="upload-icon">⏳</div><div class="upload-title">Parsing ${file.name}…</div><div class="upload-sub">Extracting transaction data</div>`;
+  setTimeout(()=>{
+    zone.innerHTML = `<div class="upload-icon">✅</div><div class="upload-title">${file.name}</div><div class="upload-sub">Statement parsed successfully — 6 months extracted</div>`;
+    const months = ['Nov','Dec','Jan','Feb','Mar','Apr'];
+    const credits = [52000,48000,61000,55000,58000,54000];
+    const debits  = [38000,35000,44000,40000,41000,39000];
+    const maxC = Math.max(...credits);
+    document.getElementById('parsed-preview').style.display='block';
+    document.getElementById('parsed-preview').innerHTML = `
+      <div class="parsed-preview">
+        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--ink3);margin-bottom:12px;">Extracted from statement</div>
+        ${[
+          ['Account Name','DBS Business Account'],
+          ['Account No.','XXX-XXXXX-2847'],
+          ['Statement Period','Nov 2025 – Apr 2026'],
+          ['Avg Monthly Inflow','SGD 54,667',true],
+          ['Avg Monthly Outflow','SGD 39,500',false,true],
+          ['Net Monthly Cash Flow','SGD 15,167',true],
+          ['Consistency Score','76 / 100',true],
+          ['Bounced Cheques','0',true],
+          ['Recurring Loan Payments','SGD 2,400/mo'],
+        ].map(([l,v,pos,neg])=>`<div class="parsed-row"><span class="parsed-label">${l}</span><span class="parsed-val ${pos?'positive':neg?'negative':''}">${v}</span></div>`).join('')}
+        <div style="margin-top:14px;font-size:11px;color:var(--ink3);margin-bottom:8px;font-weight:600;">Monthly credit vs debit (SGD)</div>
+        <div class="month-bars">
+          ${months.map((m,i)=>`<div class="month-bar-wrap">
+            <div class="month-bar credit" style="height:${Math.round(credits[i]/maxC*60)}px"></div>
+            <div class="month-bar debit"  style="height:${Math.round(debits[i]/maxC*60)}px"></div>
+            <div class="month-label">${m}</div>
+          </div>`).join('')}
+        </div>
+        <div style="display:flex;gap:12px;margin-top:8px;font-size:11px;color:var(--ink3)"><span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;background:var(--prime);border-radius:2px;display:inline-block"></span>Credits</span><span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;background:var(--red);border-radius:2px;display:inline-block;opacity:.6"></span>Debits</span></div>
+      </div>`;
+    // Auto-fill
+    const setVal = (id,v)=>{const el=document.getElementById(id);if(el)el.value=v;};
+    setVal('f-avgMonthlyInflow','54667');
+    setVal('f-avgMonthlyOutflow','39500');
+    setVal('f-inflowConsistency','76');
+    setVal('f-bouncedCheques','no'); // already set
+    showToast('Bank statement parsed — cash flow fields auto-filled','📄');
+  }, 1800);
+}
+
+// ══════════════════════════════════════════════════════
+// SCORE RESULT RENDERER
+// ══════════════════════════════════════════════════════
+function renderScoreResult(result, inp, showCalc) {
+  const { finalScore, risk, dscr, netMonthly, monthlyRepayment, gates, hardFail, moduleScores, calcDetails, loanAmt } = result;
+  const color = hardFail ? 'var(--red)' : risk.color;
+
+  return `
+    <div class="score-hero" style="border-color:${color}22">
+      <div class="score-number" style="color:${color}">${finalScore}</div>
+      <div class="score-label" style="color:${color}">${hardFail?'DECLINED — HARD GATE':risk.cat}</div>
+      <div class="score-desc">${hardFail?'One or more hard gates failed. Loan cannot be processed.':risk.desc}</div>
     </div>
-  `).join('');
 
-  // Admin table
-  document.getElementById('admin-table-body').innerHTML = borrowers.length === 0
-    ? '<tr><td colspan="6" style="text-align:center;padding:32px;color:var(--text3)">No data</td></tr>'
-    : borrowers.map(b => `
-    <tr onclick="openDetail('${b.id}')">
-      <td class="td-name">${esc(b.name)}</td>
-      <td><span class="mono" style="color:${catColor(b.categoryClass)}">${b.score}</span></td>
-      <td><span class="badge badge-${b.categoryClass}"><span class="badge-dot"></span>${b.category}</span></td>
-      <td style="font-family:var(--mono)">${formatCurrency(b.loan)}</td>
-      <td><span class="badge ${statusClass(b.status)}">${b.status||'Active'}</span></td>
-      <td><button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();openDetail('${b.id}')">View →</button></td>
-    </tr>
-  `).join('');
+    <!-- Hard Gates -->
+    <div class="card mb-20">
+      <div class="card-hd"><span class="card-title">Hard Gate Checks</span><span class="text-sm text-muted">Auto-decline if any gate fails</span></div>
+      <div class="card-body">
+        <div class="dscr-box">
+          <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--ink3);margin-bottom:10px">DSCR Calculation</div>
+          <div class="dscr-formula">
+            DSCR = Net Monthly Cash Flow ÷ Monthly Repayment = ${fmtSGD(Math.round(netMonthly))} ÷ ${fmtSGD(Math.round(monthlyRepayment))} = <strong>${dscr.toFixed(2)}</strong>
+          </div>
+        </div>
+        <div style="margin-top:14px">
+          ${gates.map(g=>`
+            <div class="gate-row">
+              <div class="gate-status ${g.pass?'gate-pass':'gate-fail'}"></div>
+              <div style="flex:1;font-size:13px;color:var(--ink2)">${g.label}</div>
+              <span class="hard-gate-badge ${g.pass?'gate-pass-badge':'gate-fail-badge'}">${g.val} — ${g.pass?'PASS':'FAIL'}</span>
+            </div>`).join('')}
+        </div>
+      </div>
+    </div>
 
-  drawCharts(borrowers);
+    <!-- Module Breakdown -->
+    <div class="breakdown-grid mb-20">
+      ${Object.entries(moduleScores).map(([id,s])=>{
+        const mod = getEngineConfig().modules.find(m=>m.id===id);
+        return `<div class="breakdown-item">
+          <div class="bd-label">${mod?.label||id}</div>
+          <div class="bd-val" style="color:${mod?.color||'var(--ink)'}">${s.weighted.toFixed(1)}</div>
+          <div class="text-sm text-muted">${s.weight}% weight</div>
+          <div class="bd-bar"><div class="bd-fill" id="bar-${id}" style="background:${mod?.color||'var(--red)'};width:0"></div></div>
+        </div>`;}).join('')}
+    </div>
+
+    <!-- Loan Recommendation -->
+    <div class="card mb-20">
+      <div class="card-hd"><span class="card-title">Loan Recommendation</span></div>
+      <div class="card-body">
+        <div class="flex-between">
+          <div>
+            <div class="text-sm text-muted">Recommended Loan Limit</div>
+            <div style="font-family:var(--serif);font-size:36px;color:${hardFail?'var(--red)':color};letter-spacing:-1px;margin-top:4px">${hardFail?'NOT ELIGIBLE':fmtSGD(loanAmt)}</div>
+            <div class="text-sm text-muted mt-8">${hardFail?'Hard gate failure — manual review required':`Based on ${(result.loanPct*100).toFixed(0)}% of avg monthly inflow · ${risk.cat} tier`}</div>
+          </div>
+          <div style="text-align:right">
+            <div class="text-sm text-muted">Est. Monthly Repayment</div>
+            <div style="font-family:var(--mono);font-size:18px;color:var(--ink);margin-top:4px">${hardFail?'—':fmtSGD(Math.round(loanAmt*1.28/12))}</div>
+            <div class="text-sm text-muted">28% p.a. · 12-month tenor</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    ${showCalc ? renderCalcTransparency(result, inp) : ''}
+  `;
 }
 
-function drawCharts(borrowers) {
-  drawScoreChart(borrowers);
-  drawLoanChart(borrowers);
+function renderCalcTransparency(result, inp) {
+  const cfg = getEngineConfig();
+  return `
+    <div class="card mb-20">
+      <div class="card-hd"><span class="card-title">Full Calculation Transparency</span><span class="text-sm text-muted">Every number explained</span></div>
+      <div class="card-body">
+        <div class="formula-box">
+          Final Score = Σ (Module Score × Module Weight)<br>
+          ${Object.entries(result.moduleScores).map(([id,s])=>{
+            const mod=cfg.modules.find(m=>m.id===id);
+            return `  ${mod?.label||id}: ${s.pct.toFixed(3)} × ${s.weight} = ${s.weighted.toFixed(2)} pts`;
+          }).join('<br>')}
+          <br>─────────────────────────────
+          <br><strong>Total: ${result.finalScore} / 100</strong>
+        </div>
+        ${Object.entries(result.calcDetails).map(([id,lines])=>{
+          const mod=cfg.modules.find(m=>m.id===id);
+          const ms=result.moduleScores[id];
+          return `<div class="calc-step mt-16">
+            <div class="calc-step-title">${mod?.label||id} — Weight: ${ms?.weight}%</div>
+            ${lines.map(l=>`<div class="calc-line"><span>${l.label}</span><span class="val ${l.earned>=l.max*0.7?'pos':l.earned===0?'neg':''}">${l.earned.toFixed(1)} / ${l.max}</span></div>`).join('')}
+            <div class="calc-line calc-total"><span>Module Total</span><span class="val">${ms?.raw?.toFixed(1)||0} / ${ms?.max||0} (${(ms?.pct*100||0).toFixed(1)}%)</span></div>
+          </div>`;}).join('')}
+      </div>
+    </div>
+  `;
 }
 
-function getThemeColor(varName) {
-  return getComputedStyle(document.documentElement).getPropertyValue(varName).trim();
+function animateBars(result) {
+  Object.entries(result.moduleScores).forEach(([id,s])=>{
+    const el = document.getElementById('bar-'+id);
+    if (el) el.style.width = (s.pct*100)+'%';
+  });
 }
+
+// ══════════════════════════════════════════════════════
+// ADMIN — DASHBOARD
+// ══════════════════════════════════════════════════════
+function renderAdminDashboard() {
+  const borrowers = getBorrowers();
+  const total = borrowers.length;
+  const avg = total ? Math.round(borrowers.reduce((s,b)=>s+b.score,0)/total) : 0;
+  const active = borrowers.filter(b=>b.status==='Approved'||b.status==='Disbursed').length;
+  const exposure = borrowers.reduce((s,b)=>s+(b.loanAmt||0),0);
+  const atRisk = borrowers.filter(b=>b.status==='At Risk').length;
+
+  document.getElementById('main-content').innerHTML = `
+    <div class="page-hd flex-between">
+      <div><div class="page-title">Admin Dashboard</div><div class="page-sub">Portfolio overview · Live underwriting data</div></div>
+      <button class="btn btn-secondary btn-sm" onclick="seedDemoData()">Seed Demo Data</button>
+    </div>
+    <div class="kpi-grid">
+      <div class="kpi"><div class="kpi-label">Total Applications</div><div class="kpi-val">${total}</div><div class="kpi-sub">All submitted</div></div>
+      <div class="kpi"><div class="kpi-label">Portfolio Avg Score</div><div class="kpi-val">${avg||'—'}</div><div class="kpi-sub">Tutum Score</div></div>
+      <div class="kpi"><div class="kpi-label">Total Exposure</div><div class="kpi-val" style="font-size:22px">${fmtSGD(exposure)}</div><div class="kpi-sub">Recommended loans</div></div>
+      <div class="kpi"><div class="kpi-label">At Risk</div><div class="kpi-val" style="color:var(--red)">${atRisk}</div><div class="kpi-sub">Flagged borrowers</div></div>
+    </div>
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-hd"><span class="card-title">Recent Applications</span><button class="btn btn-ghost btn-sm" onclick="showAdminView('applications',null)">View all</button></div>
+        <div class="table-wrap">
+          ${total===0?'<div class="empty"><h3>No applications</h3><p>Applications will appear here.</p></div>':
+          `<table><thead><tr><th>Business</th><th>Score</th><th>Category</th><th>DSCR</th><th>Loan</th><th>Status</th></tr></thead>
+          <tbody>${borrowers.slice(0,8).map(b=>`<tr onclick="openAdminDetail('${b.id}')">
+            <td class="td-name">${esc(b.bizName||'—')}</td>
+            <td><span class="text-mono" style="color:${classifyRisk(b.score).color}">${b.score}</span></td>
+            <td><span class="badge badge-${b.categoryClass||'pending'}">${b.category||'—'}</span></td>
+            <td><span class="text-mono">${(b.dscr||0).toFixed(2)}</span></td>
+            <td>${fmtSGD(b.loanAmt)}</td>
+            <td><span class="badge badge-pending">${esc(b.status)}</span></td>
+          </tr>`).join('')}</tbody></table>`}
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hd"><span class="card-title">Risk Distribution</span></div>
+        <div class="card-body">
+          ${['PRIME','STRONG','WATCH','HIGH'].map(cat=>{
+            const cnt=borrowers.filter(b=>b.category===cat).length;
+            const pct=total?Math.round(cnt/total*100):0;
+            const col={PRIME:'var(--prime)',STRONG:'var(--strong)',WATCH:'var(--watch)',HIGH:'var(--red)'}[cat];
+            return `<div style="margin-bottom:14px">
+              <div class="flex-between" style="margin-bottom:6px"><span style="font-size:12px;font-weight:600;color:${col}">${cat}</span><span class="text-mono text-sm">${cnt} (${pct}%)</span></div>
+              <div style="height:8px;background:var(--border);border-radius:4px;overflow:hidden"><div style="height:100%;width:${pct}%;background:${col};border-radius:4px;transition:width .5s ease"></div></div>
+            </div>`;}).join('')}
+          <div class="divider"></div>
+          <div class="calc-step">
+            <div class="calc-step-title">Portfolio Health</div>
+            <div class="calc-line"><span>Avg DSCR</span><span class="val pos">${total?(borrowers.reduce((s,b)=>s+(b.dscr||0),0)/total).toFixed(2):'—'}</span></div>
+            <div class="calc-line"><span>Hard gate fails</span><span class="val neg">${borrowers.filter(b=>b.hardFail).length}</span></div>
+            <div class="calc-line"><span>Target default rate</span><span class="val">&lt; 3.0%</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+// ══════════════════════════════════════════════════════
+// ADMIN — APPLICATIONS
+// ══════════════════════════════════════════════════════
+function renderApplications() {
+  const borrowers = getBorrowers();
+  document.getElementById('main-content').innerHTML = `
+    <div class="page-hd flex-between">
+      <div><div class="page-title">All Applications</div><div class="page-sub">${borrowers.length} total borrowers</div></div>
+      <input type="text" id="srch" placeholder="Search by name or UEN…" style="padding:8px 12px;border-radius:var(--r-sm);border:1px solid var(--border);background:var(--white);font-family:var(--sans);font-size:13px;color:var(--ink);width:220px" oninput="filterApps()">
+    </div>
+    <div class="card">
+      <div class="table-wrap">
+        <table id="apps-table">
+          <thead><tr><th>Business</th><th>UEN</th><th>Director</th><th>Score</th><th>DSCR</th><th>Category</th><th>Loan</th><th>Hard Gate</th><th>Status</th><th>Date</th></tr></thead>
+          <tbody id="apps-tbody">
+          ${borrowers.length===0?'<tr><td colspan="10" style="text-align:center;padding:40px;color:var(--ink3)">No applications yet</td></tr>':
+          borrowers.map(b=>appRow(b)).join('')}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  `;
+}
+
+function appRow(b) {
+  return `<tr onclick="openAdminDetail('${b.id}')">
+    <td class="td-name">${esc(b.bizName||'—')}</td>
+    <td class="text-mono text-sm">${esc(b.uen||'—')}</td>
+    <td>${esc(b.dirName||'—')}</td>
+    <td><span class="text-mono" style="font-size:15px;color:${classifyRisk(b.score).color}">${b.score}</span></td>
+    <td><span class="text-mono ${b.dscr>=1.2?'':''}\" style="color:${b.dscr>=1.2?'var(--prime)':'var(--red)'}">${(b.dscr||0).toFixed(2)}</span></td>
+    <td><span class="badge badge-${b.categoryClass||'pending'}">${b.category||'—'}</span></td>
+    <td>${fmtSGD(b.loanAmt)}</td>
+    <td><span class="hard-gate-badge ${b.hardFail?'gate-fail-badge':'gate-pass-badge'}">${b.hardFail?'FAILED':'PASSED'}</span></td>
+    <td><span class="badge badge-pending">${esc(b.status)}</span></td>
+    <td class="text-sm text-muted">${fmtDate(b.timestamp)}</td>
+  </tr>`;
+}
+
+function filterApps() {
+  const q = document.getElementById('srch')?.value.toLowerCase()||'';
+  const borrowers = getBorrowers().filter(b=>
+    (b.bizName||'').toLowerCase().includes(q)||(b.uen||'').toLowerCase().includes(q)||(b.dirName||'').toLowerCase().includes(q)
+  );
+  const tbody = document.getElementById('apps-tbody');
+  if (tbody) tbody.innerHTML = borrowers.map(b=>appRow(b)).join('');
+}
+
+function openAdminDetail(id) {
+  const b = getBorrowers().find(x=>x.id===id);
+  if (!b) return;
+  const result = { finalScore:b.score, risk:classifyRisk(b.score), dscr:b.dscr, netMonthly:(b.avgMonthlyInflow||0)-(b.avgMonthlyOutflow||0), monthlyRepayment:b.loanAmt?b.loanAmt*1.28/12:0, gates:b.gates||[], hardFail:b.hardFail, moduleScores:b.moduleScores||{}, calcDetails:b.calcDetails||{}, loanAmt:b.loanAmt, loanPct:b.loanPct||0 };
+  document.getElementById('main-content').innerHTML = `
+    <button class="btn btn-ghost btn-sm mb-20" onclick="showAdminView('applications',null)">← Back to Applications</button>
+    <div class="page-hd flex-between">
+      <div><div class="page-title">${esc(b.bizName)}</div><div class="page-sub">UEN: ${esc(b.uen||'—')} · ${fmtDate(b.timestamp)}</div></div>
+      <div class="flex gap-8">
+        <button class="btn btn-success btn-sm" onclick="updateStatus('${id}','Approved')">Approve</button>
+        <button class="btn btn-warn btn-sm" onclick="updateStatus('${id}','Under Review')">Under Review</button>
+        <button class="btn btn-danger btn-sm" onclick="updateStatus('${id}','Declined')">Decline</button>
+      </div>
+    </div>
+    <div class="grid-2 mb-20">
+      <div class="card">
+        <div class="card-hd"><span class="card-title">Business Details</span></div>
+        <div class="card-body">
+          ${[['Business Name',b.bizName],['UEN',b.uen],['Address',b.address],['Industry',b.industry],['Business Age',b.bizAge+' years'],['GST No.',b.gstNo||'Not provided'],['ACRA Verified',b.acraVerified==='yes'?'✓ Yes':'✗ No'],['GST Registered',b.gstRegistered==='yes'?'✓ Yes':'✗ No']].map(([l,v])=>`
+            <div class="parsed-row"><span class="parsed-label">${l}</span><span class="parsed-val">${esc(v||'—')}</span></div>`).join('')}
+          <div class="divider"></div>
+          ${[['Director Name',b.dirName],['NRIC / Passport',b.dirNric],['Contact',b.dirPhone],['Email',b.dirEmail],['Bankruptcy',b.bankruptcy==='yes'?'⚠️ Yes':'✓ No']].map(([l,v])=>`
+            <div class="parsed-row"><span class="parsed-label">${l}</span><span class="parsed-val">${esc(v||'—')}</span></div>`).join('')}
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hd"><span class="card-title">Financial Details</span></div>
+        <div class="card-body">
+          ${[['Monthly Revenue',fmtSGD(b.revenue)],['Profit Margin',b.margin+'%'],['Cash Buffer',b.cashBuffer+' months'],['Existing Debt',fmtSGD(b.existingDebt)],['Avg Monthly Inflow',fmtSGD(b.avgMonthlyInflow)],['Avg Monthly Outflow',fmtSGD(b.avgMonthlyOutflow)],['Net Monthly Cash Flow',fmtSGD((b.avgMonthlyInflow||0)-(b.avgMonthlyOutflow||0))],['Inflow Consistency',b.inflowConsistency+'/100'],['Largest Client %',b.clientConcentration+'%'],['Past Defaults',b.pastDefaults==='yes'?'⚠️ Yes':'✓ No'],['Payment Delay',b.payDelay+' days avg'],['Bounced Cheques',b.bouncedCheques==='yes'?'⚠️ Yes':'✓ None'],['Revenue Trend',b.trend],['Loan Requested',fmtSGD(b.loanRequested)],['Loan Purpose',b.loanPurpose]].map(([l,v])=>`
+            <div class="parsed-row"><span class="parsed-label">${l}</span><span class="parsed-val">${esc(v||'—')}</span></div>`).join('')}
+        </div>
+      </div>
+    </div>
+    ${renderScoreResult(result, b, true)}
+  `;
+  setTimeout(()=>animateBars(result),100);
+}
+
+function updateStatus(id, status) {
+  const borrowers = getBorrowers();
+  const b = borrowers.find(x=>x.id===id);
+  if (b) { b.status=status; saveBorrowers(borrowers); showToast('Status updated to: '+status,'✅'); openAdminDetail(id); }
+}
+
+// ══════════════════════════════════════════════════════
+// ADMIN — SCORING ENGINE CONFIG
+// ══════════════════════════════════════════════════════
+function renderScoringEngine() {
+  const cfg = getEngineConfig();
+  const totalW = cfg.modules.filter(m=>m.active).reduce((s,m)=>s+m.weight,0);
+
+  document.getElementById('main-content').innerHTML = `
+    <div class="page-hd flex-between">
+      <div><div class="page-title">Scoring Engine Configuration</div><div class="page-sub">Adjust weights, toggle metrics, add custom signals · Changes apply to all new assessments</div></div>
+      <div class="flex gap-8">
+        <button class="btn btn-secondary btn-sm" onclick="resetEngine()">Reset Defaults</button>
+        <button class="btn btn-primary btn-sm" onclick="saveEngineConfig()">Save Configuration</button>
+      </div>
+    </div>
+
+    <!-- Weight Total -->
+    <div class="total-weight-bar mb-20">
+      <div><div class="weight-total-val" id="total-w-val" style="color:${totalW===100?'var(--prime)':'var(--red)'}">${totalW}%</div><div class="weight-total-label">Total weight (must = 100%)</div></div>
+      <div style="flex:1;height:8px;background:var(--border);border-radius:4px;overflow:hidden"><div style="height:100%;width:${Math.min(totalW,100)}%;background:${totalW===100?'var(--prime)':totalW>100?'var(--red)':'var(--watch)'};border-radius:4px;transition:width .3s"></div></div>
+      <div class="text-sm text-muted">${totalW===100?'✓ Balanced':'⚠️ Must total 100%'}</div>
+    </div>
+
+    <!-- Hard Gates -->
+    <div class="card mb-20">
+      <div class="card-hd"><span class="card-title">Hard Gates (Auto-Decline)</span><span class="text-sm text-muted">Borrower fails regardless of score if any gate triggers</span></div>
+      <div class="card-body">
+        ${cfg.hardGates.map((g,i)=>`
+          <div class="metric-row">
+            <div class="metric-toggle ${g.active?'on':''}" onclick="toggleGate(${i})"></div>
+            <div style="flex:1">
+              <div class="metric-name">${g.label}</div>
+              <div class="metric-desc">${g.desc}</div>
+            </div>
+            ${g.type!=='flag'?`<div class="flex gap-8 align-items:center"><label class="text-sm text-muted">Threshold:</label><input type="number" step="0.1" value="${g.value}" class="engine-weight-input" style="width:80px" onchange="updateGate(${i},this.value)"></div>`:'<span class="metric-pts">Boolean</span>'}
+          </div>`).join('')}
+        <div class="mt-16"><button class="btn btn-secondary btn-sm" onclick="addHardGate()">+ Add Gate</button></div>
+      </div>
+    </div>
+
+    <!-- Scoring Modules -->
+    ${cfg.modules.map((mod,mi)=>`
+      <div class="engine-module">
+        <div class="engine-module-hd">
+          <div class="metric-toggle ${mod.active?'on':''}" onclick="toggleModule(${mi})"></div>
+          <div class="engine-module-title" style="color:${mod.color}">${mod.label}</div>
+          <div class="flex gap-8" style="align-items:center">
+            <label class="text-sm text-muted">Weight:</label>
+            <input type="number" min="0" max="100" value="${mod.weight}" class="engine-weight-input" id="weight-${mod.id}" onchange="updateWeight(${mi},this.value)">
+            <span class="engine-weight-pct">%</span>
+          </div>
+        </div>
+        <div class="weight-bar"><div class="weight-fill" style="width:${mod.weight}%;background:${mod.color}"></div></div>
+        <div class="metric-list">
+          ${mod.metrics.map((metric,ri)=>`
+            <div class="metric-row">
+              <div class="metric-toggle ${metric.active?'on':''}" onclick="toggleMetric(${mi},${ri})"></div>
+              <div style="flex:1">
+                <div class="metric-name">${metric.label}</div>
+                <div class="metric-desc">${metric.desc}</div>
+              </div>
+              <input type="number" min="0" max="50" value="${metric.pts}" class="engine-weight-input" style="width:56px" onchange="updateMetricPts(${mi},${ri},this.value)">
+              <span class="text-sm text-muted">pts</span>
+              <button class="btn btn-ghost btn-sm" onclick="deleteMetric(${mi},${ri})" title="Delete metric" style="color:var(--red);padding:4px 8px">✕</button>
+            </div>`).join('')}
+          <div class="add-metric-form" id="add-form-${mi}">
+            <div class="form-row">
+              <div class="form-group"><label>Metric Name</label><input id="nm-name-${mi}" placeholder="e.g. Tax compliance score"></div>
+              <div class="form-group"><label>Description</label><input id="nm-desc-${mi}" placeholder="Brief description"></div>
+            </div>
+            <div class="form-row">
+              <div class="form-group"><label>Max Points</label><input type="number" id="nm-pts-${mi}" value="10" min="1" max="50"></div>
+            </div>
+            <div class="flex gap-8 mt-8">
+              <button class="btn btn-primary btn-sm" onclick="confirmAddMetric(${mi})">Add Metric</button>
+              <button class="btn btn-ghost btn-sm" onclick="document.getElementById('add-form-${mi}').style.display='none'">Cancel</button>
+            </div>
+          </div>
+          <div class="mt-16"><button class="btn btn-ghost btn-sm" onclick="document.getElementById('add-form-${mi}').style.display='block'">+ Add Metric</button></div>
+        </div>
+      </div>`).join('')}
+
+    <div class="card mt-20">
+      <div class="card-hd"><span class="card-title">Add New Scoring Module</span></div>
+      <div class="card-body">
+        <div class="form-row">
+          <div class="form-group"><label>Module Name</label><input id="new-mod-name" placeholder="e.g. Social Proof Score"></div>
+          <div class="form-group"><label>Initial Weight (%)</label><input type="number" id="new-mod-weight" value="10" min="0" max="100"></div>
+        </div>
+        <button class="btn btn-primary btn-sm" onclick="addModule()">Add Module</button>
+      </div>
+    </div>
+  `;
+}
+
+// Engine mutation helpers
+function getCfg() { return getEngineConfig(); }
+function pushCfg(cfg) { saveEngine(cfg); renderScoringEngine(); }
+
+function toggleModule(mi) { const c=getCfg(); c.modules[mi].active=!c.modules[mi].active; pushCfg(c); }
+function toggleMetric(mi,ri) { const c=getCfg(); c.modules[mi].metrics[ri].active=!c.modules[mi].metrics[ri].active; pushCfg(c); }
+function toggleGate(i) { const c=getCfg(); c.hardGates[i].active=!c.hardGates[i].active; pushCfg(c); }
+function updateWeight(mi,v) { const c=getCfg(); c.modules[mi].weight=parseInt(v)||0; saveEngine(c); recalcTotalW(c); }
+function updateGate(i,v) { const c=getCfg(); c.hardGates[i].value=parseFloat(v); saveEngine(c); }
+function updateMetricPts(mi,ri,v) { const c=getCfg(); c.modules[mi].metrics[ri].pts=parseInt(v)||0; saveEngine(c); }
+function deleteMetric(mi,ri) { if(!confirm('Delete this metric?'))return; const c=getCfg(); c.modules[mi].metrics.splice(ri,1); pushCfg(c); }
+function recalcTotalW(cfg) {
+  const tot = cfg.modules.filter(m=>m.active).reduce((s,m)=>s+m.weight,0);
+  const el=document.getElementById('total-w-val');
+  if(el){el.textContent=tot+'%';el.style.color=tot===100?'var(--prime)':'var(--red)';}
+}
+function saveEngineConfig() { const cfg=getCfg(); saveEngine(cfg); showToast('Scoring engine configuration saved','✅'); }
+function resetEngine() { if(!confirm('Reset to defaults?'))return; localStorage.removeItem(SK+'engine'); renderScoringEngine(); showToast('Engine reset to defaults','↺'); }
+
+function addModule() {
+  const name=document.getElementById('new-mod-name')?.value.trim();
+  const weight=parseInt(document.getElementById('new-mod-weight')?.value)||10;
+  if(!name){showToast('Enter a module name','⚠️');return;}
+  const c=getCfg();
+  c.modules.push({id:'custom_'+Date.now(),label:name,weight,active:true,color:'#6B7280',metrics:[]});
+  pushCfg(c);
+  showToast('Module added','✅');
+}
+
+function confirmAddMetric(mi) {
+  const name=document.getElementById(`nm-name-${mi}`)?.value.trim();
+  const desc=document.getElementById(`nm-desc-${mi}`)?.value.trim();
+  const pts=parseInt(document.getElementById(`nm-pts-${mi}`)?.value)||10;
+  if(!name){showToast('Enter a metric name','⚠️');return;}
+  const c=getCfg();
+  c.modules[mi].metrics.push({id:'custom_'+Date.now(),label:name,desc:desc||'Custom metric',pts,active:true});
+  pushCfg(c);
+  showToast('Metric added','✅');
+}
+
+function addHardGate() {
+  const label=prompt('Gate name (e.g. Minimum credit score):');
+  if(!label)return;
+  const val=parseFloat(prompt('Threshold value:')||'0');
+  const c=getCfg();
+  c.hardGates.push({id:'gate_'+Date.now(),label,value:val,type:'min',active:true,desc:'Custom hard gate'});
+  pushCfg(c);
+  showToast('Hard gate added','✅');
+}
+
+// ══════════════════════════════════════════════════════
+// ADMIN — ANALYTICS
+// ══════════════════════════════════════════════════════
+function renderAnalytics() {
+  const borrowers = getBorrowers();
+  const total = borrowers.length;
+  const cfg = getEngineConfig();
+
+  document.getElementById('main-content').innerHTML = `
+    <div class="page-hd flex-between">
+      <div><div class="page-title">Portfolio Analytics</div><div class="page-sub">Underwriting performance · Risk exposure · Model transparency</div></div>
+      <button class="btn btn-secondary btn-sm" onclick="exportJSON()">Export JSON</button>
+    </div>
+    <div class="grid-2 mb-20">
+      <div class="card">
+        <div class="card-hd"><span class="card-title">Score Distribution</span></div>
+        <div class="card-body"><canvas id="score-chart" height="180"></canvas></div>
+      </div>
+      <div class="card">
+        <div class="card-hd"><span class="card-title">Module Weight Configuration</span></div>
+        <div class="card-body">
+          ${cfg.modules.filter(m=>m.active).map(mod=>`
+            <div style="margin-bottom:12px">
+              <div class="flex-between" style="margin-bottom:5px">
+                <span style="font-size:12px;font-weight:600;color:${mod.color}">${mod.label}</span>
+                <span class="text-mono text-sm">${mod.weight}%</span>
+              </div>
+              <div style="height:20px;background:var(--border);border-radius:4px;overflow:hidden">
+                <div style="height:100%;width:${mod.weight}%;background:${mod.color};border-radius:4px;display:flex;align-items:center;padding-left:8px">
+                  <span style="font-size:10px;color:white;font-weight:600">${mod.weight}%</span>
+                </div>
+              </div>
+            </div>`).join('')}
+        </div>
+      </div>
+    </div>
+
+    <div class="card mb-20">
+      <div class="card-hd"><span class="card-title">Loan Exposure by Borrower</span></div>
+      <div class="card-body"><canvas id="loan-chart" height="160"></canvas></div>
+    </div>
+
+    <div class="card mb-20">
+      <div class="card-hd"><span class="card-title">DSCR Analysis</span></div>
+      <div class="card-body">
+        <div class="grid-3">
+          ${[['Avg DSCR',total?(borrowers.reduce((s,b)=>s+(b.dscr||0),0)/total).toFixed(2):'—'],
+             ['Below 1.2 (fails gate)',borrowers.filter(b=>(b.dscr||0)<1.2).length],
+             ['Above 1.5 (comfortable)',borrowers.filter(b=>(b.dscr||0)>=1.5).length],
+          ].map(([l,v])=>`<div class="kpi" style="min-height:0;padding:14px 16px">
+            <div class="kpi-label">${l}</div>
+            <div class="kpi-val" style="font-size:24px">${v}</div>
+          </div>`).join('')}
+        </div>
+        <div class="mt-16">
+          <canvas id="dscr-chart" height="120"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-hd"><span class="card-title">Model Transparency — Current Engine Formula</span></div>
+      <div class="card-body">
+        <div class="formula-box">
+Tutum Score = Σ (Module Raw Score ÷ Module Max) × Module Weight
+${cfg.modules.filter(m=>m.active).map(m=>`
+  ${m.label.padEnd(32)} Weight: ${String(m.weight+'%').padStart(5)}  |  Metrics: ${m.metrics.filter(x=>x.active).length} active  |  Max pts: ${m.metrics.filter(x=>x.active).reduce((s,x)=>s+x.pts,0)}`).join('')}
+
+Hard Gates (auto-decline):
+${cfg.hardGates.filter(g=>g.active).map(g=>`  ✕ ${g.label}: threshold ${g.value}`).join('\n')}
+
+Loan Sizing:  PRIME(≥85)=30%  STRONG(≥70)=20%  WATCH(≥55)=10%  HIGH(<55)=5%
+              × Average Monthly Inflow (from bank statement)
+        </div>
+      </div>
+    </div>
+  `;
+  setTimeout(()=>{drawScoreChart(borrowers);drawLoanChart(borrowers);drawDscrChart(borrowers);},100);
+}
+
+function getTC(v){ return getComputedStyle(document.documentElement).getPropertyValue(v).trim(); }
 
 function drawScoreChart(borrowers) {
-  const canvas = document.getElementById('score-chart');
-  if (!canvas) return;
-  const ctx = canvas.getContext('2d');
-  canvas.width = canvas.parentElement.offsetWidth || 400;
-  canvas.height = 180;
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-  const buckets = ['0-54', '55-69', '70-84', '85-100'];
-  const colors = [
-    getThemeColor('--high'),
-    getThemeColor('--watch'),
-    getThemeColor('--strong'),
-    getThemeColor('--prime')
-  ];
-  const counts = [0, 0, 0, 0];
-  borrowers.forEach(b => {
-    if (b.score < 55) counts[0]++;
-    else if (b.score < 70) counts[1]++;
-    else if (b.score < 85) counts[2]++;
-    else counts[3]++;
+  const canvas=document.getElementById('score-chart');
+  if(!canvas)return;
+  const ctx=canvas.getContext('2d');
+  canvas.width=canvas.parentElement.offsetWidth||400;
+  canvas.height=180;
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  const buckets=['<55','55–69','70–84','≥85'];
+  const colors=[getTC('--red'),getTC('--watch'),getTC('--strong'),getTC('--prime')];
+  const counts=[0,0,0,0];
+  borrowers.forEach(b=>{if(b.score<55)counts[0]++;else if(b.score<70)counts[1]++;else if(b.score<85)counts[2]++;else counts[3]++;});
+  const maxC=Math.max(1,...counts);
+  const pad=40;const barW=(canvas.width-pad*2)/4;const chartH=canvas.height-40;
+  ctx.font='11px Geist Mono, monospace';ctx.textAlign='center';
+  counts.forEach((c,i)=>{
+    const x=pad+i*barW+barW*.15;const w=barW*.7;const barH=c/maxC*chartH;const y=chartH-barH;
+    ctx.fillStyle=colors[i]+'33';ctx.fillRect(x,0,w,chartH);
+    ctx.fillStyle=colors[i];ctx.fillRect(x,y,w,barH);
+    ctx.fillStyle=getTC('--ink3');ctx.fillText(buckets[i],x+w/2,canvas.height-6);
+    if(c>0){ctx.fillStyle=colors[i];ctx.fillText(c,x+w/2,y-6);}
   });
-
-  const maxC = Math.max(1, ...counts);
-  const pad = 40;
-  const barW = (canvas.width - pad * 2) / 4;
-  const chartH = canvas.height - 40;
-  const textColor = getThemeColor('--text2');
-  const borderColor = getThemeColor('--border');
-
-  ctx.font = '11px DM Mono, monospace';
-  ctx.textAlign = 'center';
-
-  counts.forEach((c, i) => {
-    const x = pad + i * barW + barW * 0.15;
-    const w = barW * 0.7;
-    const barH = (c / maxC) * chartH;
-    const y = chartH - barH;
-
-    ctx.fillStyle = colors[i] + '33';
-    ctx.beginPath();
-    roundRect(ctx, x, y, w, barH, 4);
-    ctx.fill();
-
-    ctx.fillStyle = colors[i];
-    ctx.beginPath();
-    roundRect(ctx, x, y, w, barH, 4);
-    ctx.fill();
-
-    ctx.fillStyle = textColor;
-    ctx.fillText(buckets[i], x + w/2, canvas.height - 6);
-    if (c > 0) {
-      ctx.fillStyle = colors[i];
-      ctx.fillText(c, x + w/2, y - 6);
-    }
-  });
-
-  ctx.strokeStyle = borderColor;
-  ctx.lineWidth = 1;
-  ctx.beginPath();
-  ctx.moveTo(pad, chartH);
-  ctx.lineTo(canvas.width - pad, chartH);
-  ctx.stroke();
+  ctx.strokeStyle=getTC('--border');ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(pad,chartH);ctx.lineTo(canvas.width-pad,chartH);ctx.stroke();
 }
 
 function drawLoanChart(borrowers) {
-  const canvas = document.getElementById('loan-chart');
-  if (!canvas) return;
-  const ctx = canvas.getContext('2d');
-  canvas.width = canvas.parentElement.offsetWidth || 700;
-  canvas.height = 180;
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-  const textColor = getThemeColor('--text2');
-  const borderColor = getThemeColor('--border');
-
-  if (borrowers.length === 0) {
-    ctx.fillStyle = textColor;
-    ctx.font = '13px DM Sans, sans-serif';
-    ctx.textAlign = 'center';
-    ctx.fillText('No data', canvas.width/2, canvas.height/2);
-    return;
-  }
-
-  const catColors = {
-    prime: getThemeColor('--prime'),
-    strong: getThemeColor('--strong'),
-    watch: getThemeColor('--watch'),
-    high: getThemeColor('--high')
-  };
-
-  const top = borrowers.slice(0, 12);
-  const maxLoan = Math.max(1, ...top.map(b => b.loan));
-  const pad = 40;
-  const barW = (canvas.width - pad*2) / top.length;
-  const chartH = canvas.height - 40;
-
-  ctx.font = '10px DM Mono, monospace';
-
-  top.forEach((b, i) => {
-    const x = pad + i * barW + barW * 0.1;
-    const w = barW * 0.8;
-    const barH = (b.loan / maxLoan) * chartH;
-    const y = chartH - barH;
-    const color = catColors[b.categoryClass] || catColors.strong;
-
-    ctx.fillStyle = color + '22';
-    ctx.beginPath();
-    roundRect(ctx, x, 0, w, chartH, 4);
-    ctx.fill();
-
-    ctx.fillStyle = color;
-    ctx.beginPath();
-    roundRect(ctx, x, y, w, barH, 4);
-    ctx.fill();
-
-    ctx.fillStyle = textColor;
-    ctx.textAlign = 'center';
-    const shortName = b.name.length > 8 ? b.name.slice(0,7)+'…' : b.name;
-    ctx.fillText(shortName, x + w/2, canvas.height - 6);
+  const canvas=document.getElementById('loan-chart');
+  if(!canvas)return;
+  const ctx=canvas.getContext('2d');
+  canvas.width=canvas.parentElement.offsetWidth||600;
+  canvas.height=160;
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  const top=borrowers.slice(0,12);
+  if(!top.length){ctx.fillStyle=getTC('--ink3');ctx.font='13px Geist,sans-serif';ctx.textAlign='center';ctx.fillText('No data',canvas.width/2,canvas.height/2);return;}
+  const maxL=Math.max(1,...top.map(b=>b.loanAmt||0));
+  const pad=40;const barW=(canvas.width-pad*2)/top.length;const chartH=canvas.height-36;
+  const catColors={prime:getTC('--prime'),strong:getTC('--strong'),watch:getTC('--watch'),high:getTC('--red')};
+  top.forEach((b,i)=>{
+    const x=pad+i*barW+barW*.1;const w=barW*.8;const barH=(b.loanAmt||0)/maxL*chartH;const y=chartH-barH;
+    const col=catColors[b.categoryClass]||getTC('--ink3');
+    ctx.fillStyle=col+'22';ctx.fillRect(x,0,w,chartH);
+    ctx.fillStyle=col;ctx.fillRect(x,y,w,barH);
+    ctx.fillStyle=getTC('--ink3');ctx.font='9px Geist Mono,monospace';ctx.textAlign='center';
+    const sn=(b.bizName||'').slice(0,7);ctx.fillText(sn,x+w/2,canvas.height-4);
   });
-
-  ctx.strokeStyle = borderColor;
-  ctx.lineWidth = 1;
-  ctx.beginPath();
-  ctx.moveTo(pad, chartH);
-  ctx.lineTo(canvas.width - pad, chartH);
-  ctx.stroke();
+  ctx.strokeStyle=getTC('--border');ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(pad,chartH);ctx.lineTo(canvas.width-pad,chartH);ctx.stroke();
 }
 
-function roundRect(ctx, x, y, w, h, r) {
-  ctx.beginPath();
-  ctx.moveTo(x + r, y);
-  ctx.lineTo(x + w - r, y);
-  ctx.quadraticCurveTo(x+w, y, x+w, y+r);
-  ctx.lineTo(x+w, y+h-r);
-  ctx.quadraticCurveTo(x+w, y+h, x+w-r, y+h);
-  ctx.lineTo(x+r, y+h);
-  ctx.quadraticCurveTo(x, y+h, x, y+h-r);
-  ctx.lineTo(x, y+r);
-  ctx.quadraticCurveTo(x, y, x+r, y);
-  ctx.closePath();
-}
-
-// ═══════════════════════════════════════════════════════════════
-// NAVIGATION
-// ═══════════════════════════════════════════════════════════════
-
-function showView(name) {
-  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-  document.getElementById('view-' + name).classList.add('active');
-
-  ['btn-dash', 'btn-admin'].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.classList.remove('btn-active');
+function drawDscrChart(borrowers) {
+  const canvas=document.getElementById('dscr-chart');
+  if(!canvas)return;
+  const ctx=canvas.getContext('2d');
+  canvas.width=canvas.parentElement.offsetWidth||600;
+  canvas.height=120;
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  const top=borrowers.slice(0,12);
+  if(!top.length)return;
+  const maxD=Math.max(3,...top.map(b=>b.dscr||0));
+  const pad=40;const barW=(canvas.width-pad*2)/top.length;const chartH=canvas.height-30;
+  top.forEach((b,i)=>{
+    const dscr=b.dscr||0;
+    const x=pad+i*barW+barW*.1;const w=barW*.8;const barH=Math.min(dscr/maxD,1)*chartH;const y=chartH-barH;
+    const col=dscr>=1.5?getTC('--prime'):dscr>=1.2?getTC('--watch'):getTC('--red');
+    ctx.fillStyle=col;ctx.fillRect(x,y,w,barH);
+    ctx.fillStyle=getTC('--ink3');ctx.font='9px Geist Mono,monospace';ctx.textAlign='center';
+    ctx.fillText(dscr.toFixed(1),x+w/2,y-3);
   });
-
-  if (name === 'dashboard') { loadDashboard(); document.getElementById('btn-dash')?.classList.add('btn-active'); }
-  if (name === 'admin') { loadAdmin(); document.getElementById('btn-admin')?.classList.add('btn-active'); }
-  if (name === 'assessment') document.getElementById('btn-dash')?.classList.remove('btn-active');
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+  // threshold line at 1.2
+  const thY=chartH-(1.2/maxD)*chartH;
+  ctx.strokeStyle=getTC('--red');ctx.lineWidth=1;ctx.setLineDash([4,4]);
+  ctx.beginPath();ctx.moveTo(pad,thY);ctx.lineTo(canvas.width-pad,thY);ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.fillStyle=getTC('--red');ctx.font='10px Geist,sans-serif';ctx.textAlign='left';
+  ctx.fillText('DSCR 1.2 min',pad+4,thY-4);
 }
 
-// ═══════════════════════════════════════════════════════════════
-// HELPERS
-// ═══════════════════════════════════════════════════════════════
-
-function selectToggle(group, value, el) {
-  const parent = el.parentElement;
-  parent.querySelectorAll('.toggle-opt').forEach(b => b.classList.remove('selected'));
-  el.classList.add('selected');
-  document.getElementById('f-' + group).value = value;
-}
-
-function clearForm() {
-  ['f-name','f-age','f-revenue','f-margin','f-cashbuffer','f-debt','f-delay'].forEach(id => {
-    const el = document.getElementById(id); if(el) el.value = '';
-  });
-  document.getElementById('f-industry').value = 'fnb';
-  document.getElementById('f-defaults').value = 'no';
-  document.getElementById('f-trend').value = 'growth';
-  document.querySelectorAll('.toggle-opt').forEach(b => b.classList.remove('selected'));
-  document.querySelector('[onclick*="defaults\', \'no\'"]')?.classList.add('selected');
-  document.querySelector('[onclick*="trend\', \'growth\'"]')?.classList.add('selected');
-  document.getElementById('score-preview').innerHTML = '<div style="font-size:13px;color:var(--text3)">Fill form to see live score preview</div>';
-}
-
-function catColor(cls) {
-  return { prime:'var(--prime)', strong:'var(--strong)', watch:'var(--watch)', high:'var(--high)' }[cls] || 'var(--text)';
-}
-
-function statusClass(s) {
-  return { 'Active': 'status-active', 'Completed': 'status-completed', 'At Risk': 'status-risk' }[s] || 'status-active';
-}
-
-function industryLabel(ind) {
-  return { fnb:'Food & Bev', tech:'Technology', retail:'Retail', manufacturing:'Manufacturing', services:'Services', healthcare:'Healthcare', logistics:'Logistics', ecommerce:'E-Commerce' }[ind] || ind || '—';
-}
-
-function formatDate(ts) {
-  if (!ts) return '—';
-  const d = new Date(ts);
-  return d.toLocaleDateString('en-IN', { day:'2-digit', month:'short', year:'numeric' });
-}
-
-function esc(s) { return String(s||'').replace(/[<>"']/g, c => ({'<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c])); }
-
-function showToast(msg, icon='✓') {
-  const toast = document.getElementById('toast');
-  document.getElementById('toast-msg').textContent = msg;
-  document.getElementById('toast-icon').textContent = icon;
-  toast.classList.add('show');
-  setTimeout(() => toast.classList.remove('show'), 3000);
-}
-
-function exportData() {
-  const data = loadBorrowers();
-  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = 'risk_engine_portfolio.json';
-  a.click();
-  showToast('Exported portfolio data', '📥');
-}
-
-// ═══════════════════════════════════════════════════════════════
-// DEMO SEED DATA
-// ═══════════════════════════════════════════════════════════════
-
-function seedDemo() {
-  if (loadBorrowers().length > 0) {
-    if (!confirm('Add demo data to existing portfolio?')) return;
-  }
-  const demos = [
-    { name:'Zephyr Technologies', industry:'tech', age:5, revenue:75000, margin:28, cashBuffer:4, debt:8000, defaults:'no', delay:1, trend:'growth' },
-    { name:'Monsoon Bites', industry:'fnb', age:2, revenue:35000, margin:12, cashBuffer:2, debt:5000, defaults:'no', delay:3, trend:'stable' },
-    { name:'Atlas Logistics', industry:'logistics', age:7, revenue:120000, margin:18, cashBuffer:5, debt:25000, defaults:'no', delay:0, trend:'growth' },
-    { name:'Sunrise Retail Co.', industry:'retail', age:1, revenue:18000, margin:6, cashBuffer:1, debt:30000, defaults:'yes', delay:12, trend:'decline' },
-    { name:'MedFirst Healthcare', industry:'healthcare', age:4, revenue:55000, margin:22, cashBuffer:3, debt:12000, defaults:'no', delay:2, trend:'stable' },
-    { name:'Pixel Forge Studio', industry:'tech', age:2, revenue:28000, margin:35, cashBuffer:2, debt:4000, defaults:'no', delay:4, trend:'growth' },
-    { name:'Greenleaf Organics', industry:'fnb', age:3, revenue:42000, margin:8, cashBuffer:1.5, debt:18000, defaults:'yes', delay:8, trend:'decline' },
-    { name:'CoreBuild Infra', industry:'manufacturing', age:9, revenue:200000, margin:15, cashBuffer:6, debt:15000, defaults:'no', delay:1, trend:'stable' },
+// ══════════════════════════════════════════════════════
+// DEMO DATA SEED
+// ══════════════════════════════════════════════════════
+function seedDemoData() {
+  if(getBorrowers().length>0&&!confirm('Add demo data to existing?'))return;
+  const demos=[
+    {bizName:'TechNova Pte Ltd',uen:'202312001A',address:'71 Ayer Rajah Crescent, Singapore 139951',industry:'tech',bizAge:'4',dirName:'Alan Tan',dirNric:'S8901234A',dirPhone:'+65 9123 4567',dirEmail:'alan@technova.sg',acraVerified:'yes',gstRegistered:'yes',revenue:'78000',margin:'28',cashBuffer:'4',existingDebt:'12000',avgMonthlyInflow:'82000',avgMonthlyOutflow:'55000',inflowConsistency:'85',clientConcentration:'25',pastDefaults:'no',payDelay:'1',bouncedCheques:'no',bankruptcy:'no',trend:'growth',loanRequested:'50000',loanPurpose:'expansion',status:'Approved'},
+    {bizName:'Makan Sedap F&B',uen:'202212002B',address:'335 Smith Street, Singapore 050335',industry:'fnb',bizAge:'2',dirName:'Ravi Kumar',dirNric:'S9012345B',dirPhone:'+65 9234 5678',dirEmail:'ravi@makansedap.sg',acraVerified:'yes',gstRegistered:'no',revenue:'42000',margin:'12',cashBuffer:'2',existingDebt:'8000',avgMonthlyInflow:'44000',avgMonthlyOutflow:'35000',inflowConsistency:'62',clientConcentration:'15',pastDefaults:'no',payDelay:'3',bouncedCheques:'no',bankruptcy:'no',trend:'stable',loanRequested:'20000',loanPurpose:'working_capital',status:'Pending Review'},
+    {bizName:'Atlas Logistics Sg',uen:'201811003C',address:'18 Tuas Avenue 10, Singapore 639132',industry:'logistics',bizAge:'7',dirName:'James Lim',dirNric:'S7812345C',dirPhone:'+65 9345 6789',dirEmail:'james@atlas.sg',acraVerified:'yes',gstRegistered:'yes',revenue:'145000',margin:'18',cashBuffer:'5',existingDebt:'28000',avgMonthlyInflow:'152000',avgMonthlyOutflow:'112000',inflowConsistency:'80',clientConcentration:'40',pastDefaults:'no',payDelay:'2',bouncedCheques:'no',bankruptcy:'no',trend:'growth',loanRequested:'80000',loanPurpose:'equipment',status:'Disbursed'},
+    {bizName:'Sunrise Retail Co',uen:'202111004D',address:'10 Orchard Road, Singapore 238844',industry:'retail',bizAge:'1.2',dirName:'Mei Lin',dirNric:'S9512345D',dirPhone:'+65 9456 7890',dirEmail:'mei@sunrise.sg',acraVerified:'yes',gstRegistered:'no',revenue:'18000',margin:'6',cashBuffer:'1',existingDebt:'35000',avgMonthlyInflow:'19000',avgMonthlyOutflow:'18500',inflowConsistency:'45',clientConcentration:'60',pastDefaults:'yes',payDelay:'12',bouncedCheques:'yes',bankruptcy:'no',trend:'decline',loanRequested:'15000',loanPurpose:'working_capital',status:'Declined'},
+    {bizName:'MedFirst Healthcare',uen:'201912005E',address:'38 Irrawaddy Road, Singapore 329563',industry:'healthcare',bizAge:'5',dirName:'Dr. Priya Shah',dirNric:'S8512345E',dirPhone:'+65 9567 8901',dirEmail:'priya@medfirst.sg',acraVerified:'yes',gstRegistered:'yes',revenue:'68000',margin:'22',cashBuffer:'3',existingDebt:'15000',avgMonthlyInflow:'71000',avgMonthlyOutflow:'49000',inflowConsistency:'78',clientConcentration:'20',pastDefaults:'no',payDelay:'1',bouncedCheques:'no',bankruptcy:'no',trend:'stable',loanRequested:'35000',loanPurpose:'equipment',status:'Under Review'},
+    {bizName:'Pixel Forge Studio',uen:'202212006F',address:'55 Tras Street, Singapore 078995',industry:'tech',bizAge:'2.5',dirName:'Ben Chua',dirNric:'S9212345F',dirPhone:'+65 9678 9012',dirEmail:'ben@pixelforge.sg',acraVerified:'yes',gstRegistered:'yes',revenue:'32000',margin:'38',cashBuffer:'2.5',existingDebt:'5000',avgMonthlyInflow:'34000',avgMonthlyOutflow:'21000',inflowConsistency:'72',clientConcentration:'45',pastDefaults:'no',payDelay:'4',bouncedCheques:'no',bankruptcy:'no',trend:'growth',loanRequested:'18000',loanPurpose:'working_capital',status:'Approved'},
   ];
-  const statuses = ['Active', 'Active', 'Active', 'At Risk', 'Active', 'Active', 'At Risk', 'Completed'];
-
-  const existing = loadBorrowers();
-  const newBorrowers = demos.map((d, i) => {
-    const inp = { name:d.name, industry:d.industry, age:d.age, revenue:d.revenue, margin:d.margin, cashBuffer:d.cashBuffer, debt:d.debt, defaults:d.defaults, delay:d.delay, trend:d.trend };
-    const scores = calculateScore(inp);
-    const risk = classifyRisk(scores.total);
-    const loan = getLoanAmount(d.revenue, risk.pct);
-    const daysAgo = Math.floor(Math.random() * 30) + 1;
-    const ts = new Date(Date.now() - daysAgo * 86400000).toISOString();
-    return { id: (Date.now() + i).toString(), name:d.name, industry:d.industry, score:scores.total, category:risk.cat, categoryClass:risk.cls, loan, status:statuses[i], inputs:inp, breakdown:{ base:scores.base, momentum:scores.momentum, reliability:scores.reliability, penalty:scores.penalty }, timestamp:ts };
+  const cfg=getEngineConfig();
+  const existing=getBorrowers();
+  const newBorr=demos.map(d=>{
+    const result=runScore(d,cfg);
+    const daysAgo=Math.floor(Math.random()*45)+1;
+    return {...d,id:Date.now().toString()+Math.random(),score:result.finalScore,category:result.risk.cat,categoryClass:result.risk.cls,loanAmt:result.loanAmt,loanPct:result.loanPct,dscr:result.dscr,hardFail:result.hardFail,moduleScores:result.moduleScores,calcDetails:result.calcDetails,gates:result.gates,timestamp:new Date(Date.now()-daysAgo*86400000).toISOString(),user:'demo@tutum.so'};
   });
-
-  localStorage.setItem(STORAGE_KEY, JSON.stringify([...newBorrowers, ...existing]));
-  loadDashboard();
-  showToast(`${demos.length} demo borrowers added`, '🌱');
+  saveBorrowers([...newBorr,...existing]);
+  renderAdminDashboard();
+  showToast(demos.length+' demo borrowers seeded','🌱');
 }
 
-// ═══════════════════════════════════════════════════════════════
-// INIT
-// ═══════════════════════════════════════════════════════════════
+function exportJSON() {
+  const data=getBorrowers();
+  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='tutum_portfolio.json';a.click();
+  showToast('Portfolio exported','📥');
+}
 
-document.addEventListener('DOMContentLoaded', () => {
-  loadDashboard();
-  document.getElementById('btn-dash')?.classList.add('btn-active');
+// ══════════════════════════════════════════════════════
+// TOAST
+// ══════════════════════════════════════════════════════
+function showToast(msg,icon='✓') {
+  const t=document.getElementById('toast');
+  document.getElementById('toast-msg').textContent=msg;
+  document.getElementById('toast-icon').textContent=icon;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),3200);
+}
 
-  // Redraw charts when OS theme changes
-  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
-    const borrowers = loadBorrowers();
-    if (borrowers.length) { drawScoreChart(borrowers); drawLoanChart(borrowers); }
-  });
+// ══════════════════════════════════════════════════════
+// THEME CHANGE — REDRAW CHARTS
+// ══════════════════════════════════════════════════════
+window.matchMedia('(prefers-color-scheme:dark)').addEventListener('change',()=>{
+  const b=getBorrowers();if(b.length){drawScoreChart(b);drawLoanChart(b);drawDscrChart(b);}
 });
 </script>
 </body>
