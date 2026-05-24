@@ -671,9 +671,10 @@ function updateBadges(){
 
 // ═══════════════════════════ GLOBAL SME STATE ═══════════════════════════
 // Initialised here so they're never undefined regardless of call order
-window._smeDocs  = window._smeDocs  || {};
-window._dirs     = window._dirs     || [];
-window._dirCount = window._dirCount || 0;
+window._smeDocs      = window._smeDocs      || {};
+window._dirs         = window._dirs         || [];
+window._dirCount     = window._dirCount     || 0;
+window._smeOCRResults= window._smeOCRResults|| {};
 
 // ═══════════════════════════ NAV ═══════════════════════════
 const aTitles={dashboard:'Dashboard',investor:'Investor View',applications:'Applications',scoring:'Scoring Engine',loanbook:'Loan Book',newloan:'New Loan',repayments:'Repayment Tracker',alerts:'Alerts',revenue:'Revenue & P&L',defi:'DeFi Pool',blacklist:'Blacklist',reminders:'Reminders',settings:'Settings'};
@@ -847,9 +848,10 @@ function renderSMEApply(){
     </div>
   `;
   // Reset SME form state
-  window._smeDocs  = {};
-  window._dirs     = [];
-  window._dirCount = 0;
+  window._smeDocs       = {};
+  window._dirs          = [];
+  window._dirCount      = 0;
+  window._smeOCRResults = {};
   // Init directors
   addDirector();
   // Init documents
@@ -1505,7 +1507,7 @@ async function showOCRReview(docId, fileData, fileName, fileType) {
   `);
 
   // Store pending OCR data for apply-all
-  window._pendingOCR = { docId, ocrData, mappedFields };
+  window._pendingOCR = { docId, ocrData, mappedFields, usedSim: usedSimulation };
 }
 
 function applyOCRField(formId, value, type, fieldIdx) {
@@ -1540,12 +1542,18 @@ function applyOCRField(formId, value, type, fieldIdx) {
 
 function applyAllOCRFields() {
   if (!window._pendingOCR) { closeModal(); return; }
-  const { mappedFields } = window._pendingOCR;
+  const { docId, ocrData, mappedFields } = window._pendingOCR;
   mappedFields.forEach((f, i) => {
     if (f.formId && f.extracted !== null) {
       applyOCRField(f.formId, f.extracted.toString(), f.isToggle ? 'toggle' : 'text', i);
     }
   });
+  // Persist OCR result so it's saved with submission
+  if (!window._smeOCRResults) window._smeOCRResults = {};
+  window._smeOCRResults[docId] = {
+    ...ocrData,
+    _meta: { usedSimulation: window._pendingOCR.usedSim||false, runAt: new Date().toISOString() }
+  };
   calcEBITDALive(); liveScore(); renderSMEDocs();
   showToast('All OCR fields applied to form', '✅');
   closeModal();
@@ -1702,6 +1710,7 @@ function submitApp(){
     factorScores:fs,cgTotal,creditGrade:cg.grade,cgRisk:cg.risk,cgDecision:cg.decision,cgCls:cg.cls,
     offerRate:r.suggestedRate,offerTenor:r.suggestedTenor,offerAmount:r.loanAmt,offerInterestType:'reducing',offerOrigFeeRate:2.5,
     documents:{sme:window._smeDocs||{},admin:{}},
+    ocrResults: window._smeOCRResults||{},
     adminFactorScores:{...fs},
     status:'Submitted',adminNotes:'',
     timestamp:new Date().toISOString(),
